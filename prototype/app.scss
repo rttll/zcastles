@@ -1,18 +1,24 @@
+$border-radius: 2px;
+$gray: #4f4f4f;
+$border: 1px solid $gray;
+
+@mixin box() {
+  padding: 1rem;
+}
+
 html * {
   margin: 0;
   padding: 0;
   line-height: 1;
   box-sizing: border-box;
+  outline-color: blueviolet;
+  outline-width: 1px;
 }
 
 body, html {
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", sans-serif;
-}
-
-@mixin box() {
-  padding: 1rem;
 }
 
 // Type
@@ -48,3 +54,43 @@ $flex-columns: 12;
 }
 
 // Form fields
+input {
+  width: 100%;
+  padding: 0.8rem;
+  border: $border;
+  border-radius: $border-radius;
+  display: block;
+  &.big {
+    padding: 1.5rem;
+    font-size: 130%;
+  }
+}
+
+// Lists
+ul li {
+  list-style: none;
+  padding: 1rem;
+  transform: background-color .25s;
+  &:hover {
+    background: #f1f1f1;
+  }
+}
+
+ul.lined {
+  border: $border;
+}
+ul.lined li {
+  padding-bottom: 0rem;
+  > :first-child {
+    padding-bottom: 1rem;
+    border-bottom: $border;
+  }
+  &:last-child > :first-child {
+    border-bottom: 0;
+  }
+}
+
+// Util.
+.hide {
+  display: none;
+}

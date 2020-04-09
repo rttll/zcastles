@@ -2,7 +2,9 @@ html * {
   margin: 0;
   padding: 0;
   line-height: 1;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  outline-color: blueviolet;
+  outline-width: 1px; }
 
 body, html {
   margin: 0;
@@ -60,5 +62,36 @@ body, html {
 
 .f-item-12 {
   width: 100%; }
+
+input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #4f4f4f;
+  border-radius: 2px;
+  display: block; }
+  input.big {
+    padding: 1.5rem;
+    font-size: 130%; }
+
+ul li {
+  list-style: none;
+  padding: 1rem;
+  transform: background-color .25s; }
+  ul li:hover {
+    background: #f1f1f1; }
+
+ul.lined {
+  border: 1px solid #4f4f4f; }
+
+ul.lined li {
+  padding-bottom: 0rem; }
+  ul.lined li > :first-child {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #4f4f4f; }
+  ul.lined li:last-child > :first-child {
+    border-bottom: 0; }
+
+.hide {
+  display: none; }
 
 /*# sourceMappingURL=app.css.map */
