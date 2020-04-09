@@ -2,8 +2,8 @@ $border-radius: 2px;
 $gray: #4f4f4f;
 $border: 1px solid $gray;
 
-@mixin box() {
-  padding: 1rem;
+@mixin box($padding: 1rem) {
+  padding: $padding;
 }
 
 html * {
@@ -16,6 +16,7 @@ html * {
 }
 
 body, html {
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", sans-serif;
@@ -26,13 +27,59 @@ body, html {
   text-align: center;
 }
 
+// Boxes
+.cover {
+  width: 100%;
+  height: 100%;
+}
+
+.card {
+  height: 200px;
+  border: $border;
+  position: relative;
+}
+.card-media {
+  height: 65%;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+.card-content {
+  @include box(0.5rem);
+  p {
+    line-height: 1.5;}
+}
+
 // Flex layout
+
+main#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 $flex-columns: 12;
 
 .f-row {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
+  &.stretch {
+    align-items: stretch;
+  }
+  &.between {
+    justify-content: space-between;
+  }
+  &.collapse-sides {
+    > [class*="f-item"] {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
 }
 
 [class*="f-item"] {
@@ -46,6 +93,10 @@ $flex-columns: 12;
   }
 }
 
+.f-row.f-item {
+  padding: 0;
+}
+
 @for $i from 1 through $flex-columns {
   .f-item-#{$i} {
     width: $i / $flex-columns * 100%;
@@ -54,12 +105,22 @@ $flex-columns: 12;
 }
 
 // Form fields
-input {
-  width: 100%;
+@mixin input-base {
   padding: 0.8rem;
   border: $border;
   border-radius: $border-radius;
   display: block;
+}
+
+button {
+  background: #333;
+  color: #efefef;
+  @include input-base();
+}
+
+input {
+  width: 100%;
+  @include input-base();
   &.big {
     padding: 1.5rem;
     font-size: 130%;
@@ -79,6 +140,7 @@ ul li {
 ul.lined {
   border: $border;
 }
+
 ul.lined li {
   padding-bottom: 0rem;
   > :first-child {
@@ -93,4 +155,12 @@ ul.lined li {
 // Util.
 .hide {
   display: none;
+}
+
+.border-bottom {
+  border-bottom: $border;
+}
+
+#main-map {
+  background: pink;
 }
