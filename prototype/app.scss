@@ -1,0 +1,50 @@
+html * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+@mixin box() {
+  padding: 1rem;
+}
+
+// Type
+.text-center {
+  text-align: center;
+}
+
+// Flex layout
+$flex-columns: 12;
+
+.f-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+[class*="f-item"] {
+  flex-grow: 0;
+  @include box();
+  &.center {
+    margin: 0 auto;
+  }
+  &.grow {
+    flex-grow: 1
+  }
+}
+
+@for $i from 1 through $flex-columns {
+  .f-item-#{$i} {
+    width: $i / $flex-columns * 100%;
+  }
+
+}
+
+// Form fields

@@ -1,0 +1,64 @@
+html * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box; }
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", sans-serif; }
+
+.text-center {
+  text-align: center; }
+
+.f-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; }
+
+[class*="f-item"] {
+  flex-grow: 0;
+  padding: 1rem; }
+  [class*="f-item"].center {
+    margin: 0 auto; }
+  [class*="f-item"].grow {
+    flex-grow: 1; }
+
+.f-item-1 {
+  width: 8.3333333333%; }
+
+.f-item-2 {
+  width: 16.6666666667%; }
+
+.f-item-3 {
+  width: 25%; }
+
+.f-item-4 {
+  width: 33.3333333333%; }
+
+.f-item-5 {
+  width: 41.6666666667%; }
+
+.f-item-6 {
+  width: 50%; }
+
+.f-item-7 {
+  width: 58.3333333333%; }
+
+.f-item-8 {
+  width: 66.6666666667%; }
+
+.f-item-9 {
+  width: 75%; }
+
+.f-item-10 {
+  width: 83.3333333333%; }
+
+.f-item-11 {
+  width: 91.6666666667%; }
+
+.f-item-12 {
+  width: 100%; }
+
+/*# sourceMappingURL=app.css.map */
