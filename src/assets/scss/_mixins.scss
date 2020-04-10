@@ -1,0 +1,11 @@
+@mixin box($padding: 1rem) {
+  padding: $padding;
+}
+
+// Form fields
+@mixin input-base {
+  padding: 0.8rem;
+  border: $border;
+  border-radius: $border-radius;
+  display: block;
+}
