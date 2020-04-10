@@ -4,17 +4,13 @@
     <meta charset="utf-8">
     <title>Z-Clone</title>
     <link rel="stylesheet" href="app.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-       integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-       crossorigin=""/>
-
   </head>
   <body>
     <main id="app">
 
       <div class="f-row border-bottom">
         <div class="search f-item">
-          <input type="text" name="" value="">
+          <input id="search" type="text" name="" value="">
         </div>
         <div class="f-item">
           <button type="button" name="button">For Sale</button>
@@ -23,7 +19,7 @@
 
       <div class="f-row stretch f-item grow">
         <div class="f-item-6">
-          <div class="cover" id="main-map">
+          <div class="cover" id="map">
           </div>
         </div>
         <div class="f-item-6">
@@ -93,44 +89,20 @@
             </div>
 
 
-          </div>          
+          </div>
         </div>
       </div>
 
       <div class="f-row hide">
         <div class="f-item-6 center">
           <div class="search-box">
-            <input type="text" name="" value="" class="big">
-            <ul class="lined">
-              <li>
-                <div class="">
-                  Bermuda Dr Fernandina Beach, FL, 32034
-                </div>
-              </li><li>
-                <div class="">
-                  Bermuda Dr Fernandina Beach, FL, 32034
-                </div>
-              </li>
-            </ul>
+            <input id="search-main" type="text" name="" value="" class="big">
           </div>
         </div>
       </div>
     </main>
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-       integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-       crossorigin=""></script>
+    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initMap" async defer></script>
 
-    <script type="text/javascript">
-      var map = L.map('main-map').setView([51.505, -0.09], 13);
-      var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-         subdomains: 'abcd',
-         minZoom: 0,
-         maxZoom: 20,
-         ext: 'png'
-      });
-      map.addLayer(Stamen_Toner);
-    </script>
   </body>
 </html>
