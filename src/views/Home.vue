@@ -1,8 +1,9 @@
 <template>
-  <div class="">
+  <div class="view">
     <div class="f-row">
       <div class="f-item-6 center">
         <Search classlist="big"/>
+        <router-link to="/castles">asdf</router-link>
       </div>
     </div>
   </div>

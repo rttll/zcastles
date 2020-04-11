@@ -1,5 +1,5 @@
 <template id="">
-  <div>
+  <div class="view">
     <div class="f-row border-bottom">
       <div class="f-item">
         <Search />
@@ -29,8 +29,8 @@
         </header>
 
         <div class="f-row">
-          <Card v-for="card in cards" :key="card.id" class="f-item-6">
-          </Card>
+          <Castle v-for="castle in castles" :key="castle.id" class="f-item-6">
+          </Castle>
         </div>
       </div>
 
@@ -43,14 +43,14 @@
 <script type="text/javascript">
   import Search from '@/components/Search.vue'
   import Map from '@/components/Map.vue'
-  import Card from '@/components/Card.vue'
+  import Castle from '@/components/Castle.vue'
 
   export default {
     name: 'Castles',
-    components: {Search, Map, Card},
+    components: {Search, Map, Castle},
     data () {
       return {
-        cards: [
+        castles: [
           {id: '2', name: 'foo'},
           {id: '1', name: 'bar'}
         ]
