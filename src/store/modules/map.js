@@ -2,7 +2,10 @@
 const state = {
   api: null,
   ready: false,
-  currentSearch: null,
+  place: {
+    address: null,
+    geometry: null
+  },
   currentSearchResults: []
 }
 
@@ -16,6 +19,10 @@ const getters = {
 }
 
 const mutations = {
+  setPlace (state, payload) {
+    state.place.address = payload.address
+    state.place.geometry = payload.geometry
+  },
   api (state, google) {
     state.api = google
   },
@@ -25,6 +32,9 @@ const mutations = {
 }
 
 const actions = {
+  setPlace (context, payload) {
+    context.commit('setPlace', payload)
+  },
   api (context, google) {
     context.commit('api', google)
   },

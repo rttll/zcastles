@@ -11,21 +11,29 @@
     props: {
       classlist: String
     },
+    data() {
+      return {
+        search: null
+      }
+    },
     mixins: [map],
     methods: {
+      placeChanged() {
+        var place = this.search.getPlace();
+        this.$store.dispatch('map/setPlace', {address: place.formatted_address, geometry: place.geometry})
+        if (this.$router.currentRoute.name === 'Home') {
+          this.$router.push('castles')
+        }
+      },
       init () {
-        let g = this.$store.state.map.api;
-        let search = new g.maps.places.Autocomplete(
+        let api = this.$store.state.map.api;
+        this.search = new api.maps.places.Autocomplete(
             document.getElementById('search'), {
                 fields: ['formatted_address', 'geometry'],
                 componentResctrictions: {'country': 'us'}
             }
         )
-        search.addListener('place_changed', function() {
-            // marker.setMap(null)
-            // onPlaceChanged()
-        });
-        // this.$router.push('castles')
+        this.search.addListener('place_changed', this.placeChanged)
       },
 
     },

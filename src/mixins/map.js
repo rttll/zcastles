@@ -1,6 +1,11 @@
 
 export default {
   methods: {
+    mapBoundsChanged() {
+      // updateCurrentResults()
+      // getResultsFromView()
+      // updateCardList()
+    },
     loadAPI() {
       if (this.$store.state.map.api !== null) {
         return Promise.resolve(true)
