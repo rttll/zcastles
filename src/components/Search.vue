@@ -1,6 +1,6 @@
 <template id="">
   <div class="search-box">
-    <input id="search" type="text" value="" :class="classlist">
+    <input id="search" type="text" ref="search" :class="classlist" :value="getValue" @focus="clearValue" @blur="setValue">
   </div>
 </template>
 
@@ -17,7 +17,18 @@
       }
     },
     mixins: [map],
+    computed: {
+      getValue() {
+        return this.$store.state.map.place.address
+      }
+    },
     methods: {
+      clearValue() {
+        this.$refs.search.value = ''
+      },
+      setValue() {
+        this.$refs.search.value = this.getValue
+      },
       placeChanged() {
         var place = this.search.getPlace();
         this.$store.dispatch('map/setPlace', {address: place.formatted_address, geometry: place.geometry})

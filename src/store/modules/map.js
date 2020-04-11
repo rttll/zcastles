@@ -4,7 +4,8 @@ const state = {
   ready: false,
   place: {
     address: null,
-    geometry: null
+    geometry: null,
+    latLng: {lat: 37.758868753957636, lng: -122.43455562331151}
   },
   currentSearchResults: []
 }
@@ -22,6 +23,7 @@ const mutations = {
   setPlace (state, payload) {
     state.place.address = payload.address
     state.place.geometry = payload.geometry
+    state.place.latLng = {lat: payload.geometry.location.lat(), lng: payload.geometry.location.lng()}
   },
   api (state, google) {
     state.api = google

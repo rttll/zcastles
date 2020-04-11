@@ -15,7 +15,7 @@
     },
     mixins: [map],
     computed: {
-      place () {
+      place: function() {
         return this.$store.state.map.place
       }
     },
@@ -24,9 +24,9 @@
         // Can't get watch to work so subscribing instead
         this.$store.subscribe((mutation) => {
           if (mutation.type === 'map/setPlace') {
-            let place = mutation.payload;
-            var ll = {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
-            this.map.setCenter(ll)
+            // let place = mutation.payload;
+            // var ll = {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
+            this.map.setCenter(this.place.latLng)
           }
         })
       },
@@ -37,12 +37,10 @@
         }
       },
       init() {
+
         // eslint-disable-next-line
         let map = new this.$store.state.map.api.maps.Map(document.getElementById('map'), {
-          center: {
-            lat: 37.758868753957636,
-            lng: -122.43455562331151
-          },
+          center: this.place.latLng,
           zoom: 16,
           disableDefaultUI: true
         })
