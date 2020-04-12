@@ -4,7 +4,6 @@
 
 <script type="text/javascript">
   import map from '@/mixins/map.js'
-
   export default {
     name: 'Map',
     data() {
@@ -23,37 +22,50 @@
       }
     },
     methods: {
-      getPlaces() {
+      nearbySearch() {
         var request = {
-              bounds: this.map.getBounds(),
-              types: ['church']
-            },
-            api = new this.$store.state.map.api.maps.places.PlacesService(this.map);
-        // TODO: make an easier way to get to this.$store.state.map.api.
+          bounds: this.map.getBounds(),
+          types: ['church']
+        };
+        var api = new this.api.places.PlacesService(this.map),
+          results = [];
+
+        function processSearchResults(resp) {
+          resp.forEach((item) => {
+            results.push({
+              id: item.id,
+              address: item.vicinity,
+              geometry: item.geometry
+            })
+          });
+        }
+
         return new Promise(function(resolve, reject) {
           api.nearbySearch(request, function(resp, status) {
-            // TODO: check status
-            console.log(status)
-            let results = [];
-            resp.forEach((item) => {
-              results.push({
-                address: item.formatted_address,
-                geometry: item.geometry
-              })
-            });
+            if (status !== 'OK') return;
+            if (status === 'ZERO_RESULTS') return results;
+            processSearchResults(resp)
+            // if (pagination.hasNextPage) {
+            //   console.log('yes')
+            //   pagination.nextPage();
+            // } else {
+            //   console.log('no')
+            // }
             return resolve(results)
           })
           setTimeout(function() {
-            reject('no')
+            reject('search timeout')
           }, 5000)
 
         });
       },
-      updateMarkers(res) {
+      updateMarkers(results) {
+        // TODO: clear old markers?
         var map = this.map,
             markers = {},
             iconPath = this.api.SymbolPath.CIRCLE;
-        res.forEach((item, i) => {
+        // var results = this.$store.state.map.results;
+        results.forEach((item, i) => {
           markers[i] = new this.api.Marker({
             position: item.geometry.location,
             icon: {
@@ -64,12 +76,10 @@
           })
         });
       },
-      getCastles() {
+      searchMap() {
         // TODO: debounce
-        this.getPlaces().then((res) => {
+        this.nearbySearch().then((res) => {
           this.$store.dispatch('map/setResults', res)
-          // TODO: clear old markers?
-          this.updateMarkers(res)
         }).catch((err) => {
           console.log('places err', err)
         })
@@ -79,10 +89,10 @@
           // TODO: Show feedback on list
         })
         this.map.addListener('dragend', () => {
-          this.getCastles()
+          this.searchMap()
         })
         this.map.addListener('zoom_changed', () => {
-          this.getCastles()
+          this.searchMap()
         })
       },
       subscribe() {
@@ -90,8 +100,12 @@
         this.$store.subscribe((mutation) => {
           if (mutation.type === 'map/setPlace') {
             this.map.setCenter(this.place.latLng)
-            this.getCastles()
+            this.searchMap()
           }
+          if (mutation.type === 'map/setResults') {
+            this.updateMarkers(mutation.payload)
+          }
+
         })
 
       },
@@ -113,7 +127,7 @@
         this.subscribe();
         this.listeners();
         this.$store.state.map.api.maps.event.addListenerOnce(map, 'idle', () =>{
-          this.getCastles()
+          this.searchMap()
         });
       }
     },

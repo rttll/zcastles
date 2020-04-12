@@ -25,27 +25,57 @@ body, html {
   height: 100%;
 }
 
-.card {
-  height: 200px;
-  border: $border;
-  position: relative;
+.card-border-container {
+  padding: 0 .3rem;
 }
+
+.card {
+  padding: 0.5rem;
+  position: relative;
+  &.border {
+    border: 1px solid #efefef;
+    border-radius: $border-radius;
+    padding: 0;
+  }
+}
+
 .card-media {
-  height: 65%;
   overflow: hidden;
+  position: relative;
+  &:before {
+    margin-top: 60%;
+    display: block;
+    content: ''
+  }
   img {
     width: 100%;
+    max-width: 100%;
     height: auto;
     display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
   }
 }
 .card-content {
   @include box(0.5rem);
+  .title {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
   p {
-    line-height: 1.5;}
+    line-height: 1.5;
+  }
 }
 
 // Flex layout
+
+#list {
+  // TODO: fix all this
+  height: calc(100% - 69px - 73.59px);
+  overflow-y: scroll;
+}
 
 main#app, .view {
   height: 100vh;
@@ -60,6 +90,12 @@ $flex-columns: 12;
   display: flex;
   flex-direction: row;
   align-items: center;
+  &.wrap {
+    flex-wrap: wrap;
+  }
+  &.start {
+    align-items: flex-start;
+  }
   &.stretch {
     align-items: stretch;
   }
@@ -75,6 +111,7 @@ $flex-columns: 12;
 }
 
 [class*="f-item"] {
+  min-height: 0px;
   flex-grow: 0;
   @include box();
   &.center {

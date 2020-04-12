@@ -16,9 +16,9 @@
 
       <div class="f-item-6">
         <header>
-          <h3>Homes and stuff for sale</h3>
+          <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides between">
-            <p class="f-item">45 results</p>
+            <p class="f-item">{{results.length}} results</p>
             <div class="f-item">
               sorty by
               <select class="" name="">
@@ -28,10 +28,8 @@
           </div>
         </header>
 
-        <div class="f-row">
-          <Castle v-for="castle in castles" :key="castle.id" class="f-item-6">
-          </Castle>
-        </div>
+        <List id="list" class="f-row wrap start" />
+
       </div>
 
     </div>
@@ -43,21 +41,15 @@
 <script type="text/javascript">
   import Search from '@/components/Search.vue'
   import Map from '@/components/Map.vue'
-  import Castle from '@/components/Castle.vue'
+  import List from '@/components/List.vue'
 
   export default {
     name: 'Castles',
-    components: {Search, Map, Castle},
-    data () {
-      return {
-        castles: [
-          {id: '2', name: 'foo'},
-          {id: '1', name: 'bar'}
-        ]
+    components: {Search, Map, List},
+    computed: {
+      results: function() {
+        return this.$store.state.map.results
       }
-    },
-    mounted: () => {
-
     }
   }
 </script>
