@@ -40,8 +40,8 @@
         let api = this.$store.state.map.api;
         this.search = new api.maps.places.Autocomplete(
             document.getElementById('search'), {
-                fields: ['formatted_address', 'geometry'],
-                componentRestrictions: {'country': 'us'}
+                fields: ['formatted_address', 'geometry']
+                // componentRestrictions: {'country': 'us'}
             }
         )
         this.search.addListener('place_changed', this.placeChanged)

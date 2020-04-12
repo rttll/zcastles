@@ -15,6 +15,9 @@
     },
     mixins: [map],
     computed: {
+      api: function() {
+        return this.$store.state.map.api.maps
+      },
       place: function() {
         return this.$store.state.map.place
       }
@@ -23,7 +26,7 @@
       getPlaces() {
         var request = {
               bounds: this.map.getBounds(),
-              types: ['cafe']
+              types: ['church']
             },
             api = new this.$store.state.map.api.maps.places.PlacesService(this.map);
         // TODO: make an easier way to get to this.$store.state.map.api.
@@ -49,9 +52,9 @@
       updateMarkers(res) {
         var map = this.map,
             markers = {},
-            iconPath = this.$store.state.map.api.maps.SymbolPath.CIRCLE;
+            iconPath = this.api.SymbolPath.CIRCLE;
         res.forEach((item, i) => {
-          markers[i] = new this.$store.state.map.api.maps.Marker({
+          markers[i] = new this.api.Marker({
             position: item.geometry.location,
             icon: {
               path: iconPath,
@@ -101,7 +104,7 @@
       },
       init() {
         // eslint-disable-next-line
-        let map = new this.$store.state.map.api.maps.Map(document.getElementById('map'), {
+        let map = new this.api.Map(document.getElementById('map'), {
           center: this.place.latLng,
           zoom: 16,
           disableDefaultUI: true
