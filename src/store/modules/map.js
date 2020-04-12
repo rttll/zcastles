@@ -7,7 +7,7 @@ const state = {
     geometry: null,
     latLng: {lat: 37.758868753957636, lng: -122.43455562331151}
   },
-  currentSearchResults: []
+  results: []
 }
 
 const getters = {
@@ -20,6 +20,9 @@ const getters = {
 }
 
 const mutations = {
+  setResults (state, payload) {
+    state.results = payload
+  },
   setPlace (state, payload) {
     state.place.address = payload.address
     state.place.geometry = payload.geometry
@@ -34,6 +37,9 @@ const mutations = {
 }
 
 const actions = {
+  setResults (context, payload) {
+    context.commit('setResults', payload)
+  },
   setPlace (context, payload) {
     context.commit('setPlace', payload)
   },

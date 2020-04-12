@@ -41,7 +41,7 @@
         this.search = new api.maps.places.Autocomplete(
             document.getElementById('search'), {
                 fields: ['formatted_address', 'geometry'],
-                componentResctrictions: {'country': 'us'}
+                componentRestrictions: {'country': 'us'}
             }
         )
         this.search.addListener('place_changed', this.placeChanged)

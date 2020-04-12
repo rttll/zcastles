@@ -1,7 +1,7 @@
 <template id="">
   <div class="view">
     <div class="f-row border-bottom">
-      <div class="f-item">
+      <div class="f-item-3">
         <Search />
       </div>
       <div class="f-item">
