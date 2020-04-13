@@ -77,10 +77,10 @@
       updateMarkers() {
         // TODO: clear old markers?
         var map = this.map;
-        var results = this.$store.state.map.results;
+        var locations = this.$store.state.map.currentSearch.locations;
         var iconPath = this.api.SymbolPath.CIRCLE;
         var infoWindows = this.infoWindows;
-        results.forEach((item) => {
+        locations.forEach((item) => {
           let marker = new this.api.Marker({
             id: item.place.id,
             price: item.price,
@@ -107,25 +107,35 @@
           this.markers[item.place.id] = marker;
         });
       },
+      randomPhoto() {
+        let photos = this.$store.state.photos, keys = Object.keys(photos);
+        let randomNumber = Math.floor(Math.random() * (keys.length - 1));
+        return photos[keys[randomNumber]];
+      },
+      getOrCreateLocation(googleMapPlace) {
+        let locations = this.$store.state.map.locations;
+        let location = locations[googleMapPlace.id];
+        if (typeof location === 'undefined') {
+          let price = `$${(Math.floor(Math.random() * 10000000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+          // TODO: get next available photo instead of random photo
+          let photo = this.randomPhoto()
+          location = {
+            place: googleMapPlace,
+            photo: photo,
+            price: price
+          }
+          this.$store.dispatch('map/addLocation', {id: googleMapPlace.id, location: location})
+        }
+        return location;
+      },
       searchMap() {
-        this.nearbySearch().then((resp) => {
-          let results = [], castles = this.$store.state.unsplashCastles;
-          resp.forEach((item, i) => {
-            let price = `$${(500000 + Math.floor(Math.random() * 4000000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
-            let castle;
-            if (i > castles.length) {
-              castle = castles[i-castles.length];
-            } else {
-              castle = castles[i];
-            }
-            let result = {
-              place: item,
-              photo: castle,
-              price: price
-            }
-            results.push(result)
+        this.nearbySearch().then((places) => {
+          let locations = []
+          places.forEach((googleMapPlace) => {
+            let location = this.getOrCreateLocation(googleMapPlace)
+            locations.push(location)
           });
-          this.$store.dispatch('map/setResults', results)
+          this.$store.dispatch('map/setCurrentSearch', {locations: locations})
           this.updateMarkers()
         }).catch((err) => {
           console.log('places err', err)
@@ -155,7 +165,7 @@
             this.map.setCenter(this.place.latLng)
             this.debounceSearchMap()
           }
-          if (mutation.type === 'map/setResults') {
+          if (mutation.type === 'map/setCurrentSearch') {
             this.updateMarkers(mutation.payload)
           }
 

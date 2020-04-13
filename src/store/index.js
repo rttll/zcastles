@@ -6,16 +6,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    unsplashCastles: null
+    photos: {},
   },
   mutations: {
-    addUnsplashCastles (state, payload) {
-      state.unsplashCastles = payload.castles
+    addPhotos (state, payload) {
+      state.photos = payload.photos
     }
   },
   actions: {
-    addUnsplashCastles (context, payload) {
-      context.commit('addUnsplashCastles', payload)
+    addPhotos (context, payload) {
+      context.commit('addPhotos', payload)
     }
   },
   modules: {

@@ -53,7 +53,7 @@
     },
     computed: {
       results: function() {
-        return this.$store.state.map.results
+        return this.$store.state.map.currentSearch.locations
       }
     }
   }
