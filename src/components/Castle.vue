@@ -1,7 +1,7 @@
 <template id="">
   <div class="">
     <div class="card-border-container">
-      <div class="card border">
+      <div class="card border" @mouseenter="mouseEnterCastle" @mouseleave="mouseLeaveCastle">
         <div class="card-media" :style="data.style">
         </div>
         <div class="card-content">
@@ -14,11 +14,20 @@
 </template>
 
 <script type="text/javascript">
+  import { Bus } from '@/mixins/bus.js'
   export default {
     name: 'Castle',
     props: {
       result: {
         type: Object
+      }
+    },
+    methods: {
+      mouseEnterCastle: function() {
+        Bus.$emit('mouseEnterCastle', this.data.id)
+      },
+      mouseLeaveCastle: function() {
+        Bus.$emit('mouseLeaveCastle', this.data.id)
       }
     },
     computed: {
@@ -30,11 +39,12 @@
         price = `$${price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
         let data = this.$store.state.unsplashCastles[i];
         return {
+          id: this.result.place.id,
           style: `background: url(${data.urls.regular}) center center; background-size: cover`,
           src: data.urls.regular,
           price: price,
           title: data.alt_description,
-          address: this.result.address
+          address: this.result.place.address
         }
       }
     }

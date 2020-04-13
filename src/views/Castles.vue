@@ -11,7 +11,7 @@
 
     <div class="f-row stretch f-item grow">
       <div class="f-item-6">
-        <Map />
+        <Map ref="map" />
       </div>
 
       <div class="f-item-6">
@@ -46,6 +46,11 @@
   export default {
     name: 'Castles',
     components: {Search, Map, List},
+    methods: {
+      mouseEnterCastle: function(placeId) {
+        this.$refs.map.mouseEnterCastle(placeId)
+      }
+    },
     computed: {
       results: function() {
         return this.$store.state.map.results
