@@ -58,6 +58,19 @@ body, html {
     transform: translate3d(-50%, -50%, 0);
   }
 }
+
+.card-media .card-media-bg-image {
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 125%;
+  height: 125%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+
 .card-content {
   @include box(0.5rem);
   .title {

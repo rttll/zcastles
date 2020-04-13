@@ -2,7 +2,8 @@
   <div class="">
     <div class="card-border-container">
       <div class="card border" @mouseenter="mouseEnterCastle" @mouseleave="mouseLeaveCastle">
-        <div class="card-media" :style="data.style">
+        <div class="card-media">
+          <div class="card-media-bg-image" :style="data.style"></div>
         </div>
         <div class="card-content">
           <h3 class="title">{{data.price}}</h3>
@@ -40,7 +41,7 @@
         let data = this.$store.state.unsplashCastles[i];
         return {
           id: this.result.place.id,
-          style: `background: url(${data.urls.regular}) center center; background-size: cover`,
+          style: `background-image: url(${data.urls.regular})`,
           src: data.urls.regular,
           price: price,
           title: data.alt_description,
