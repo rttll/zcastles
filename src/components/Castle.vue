@@ -4,9 +4,14 @@
       <div class="card border" @mouseenter="mouseEnterCastle" @mouseleave="mouseLeaveCastle">
         <div class="card-media">
           <div class="card-media-bg-image" :style="data.style"></div>
+          <div class="card-media-attribution">
+            <span>Photo: </span>
+            <a :href="data.html" target="_blank">{{data.credit}}</a>
+          </div>
         </div>
         <div class="card-content">
           <h3 class="title">{{data.price}}</h3>
+          <p class="">{{data.sqft}} sq ft. {{data.bedrooms}} bed. {{data.bathrooms}} ba.</p>
           <p class="sub-title">{{data.address}}</p>
         </div>
       </div>
@@ -33,13 +38,18 @@
     },
     computed: {
       data: function() {
+        let l = this.location;
         return {
-          id: this.location.place.id,
-          style: `background-image: url(${this.location.photo.urls.regular})`,
-          src: this.location.photo.regular,
-          price: this.location.price,
-          title: this.location.photo.alt_description,
-          address: this.location.place.address
+          id: l.place.id,
+          style: `background-image: url(${l.photo.urls.regular})`,
+          html: l.photo.links.html,
+          credit: l.photo.user.name,
+          price: l.price,
+          bedrooms: l.bedrooms,
+          bathrooms: l.bathrooms,
+          sqft: l.sqft,
+          title: l.photo.alt_description,
+          address: l.place.address
         }
       }
     }

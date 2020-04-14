@@ -59,6 +59,16 @@ body, html {
   }
 }
 
+.card-media .card-media-attribution {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  > * {
+    font-size: 8px;
+    font-family: Arial, sans-serif;
+    color: #efefef;
+  }
+}
 .card-media .card-media-bg-image {
   background-size: contain;
   background-position: center center;

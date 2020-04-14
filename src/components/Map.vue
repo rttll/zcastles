@@ -51,8 +51,12 @@
               scale: 6
             }
           })
+          let windowContent = `
+            <a href="#" data-show-location-details="${item.place.id}">${item.price}</a>
+            <p style="font-size:9px;line-height:1.5">${item.sqft} sq ft. ${item.bedrooms} bed. ${item.bathrooms} ba.</p>
+          `
           infoWindows[item.place.id] = new this.api.InfoWindow({
-            content: item.price,
+            content: windowContent,
             map: null
           })
 
@@ -93,12 +97,14 @@
         let locations = this.$store.state.map.locations;
         let location = locations[googleMapPlace.id];
         if (typeof location === 'undefined') {
-          let price = `$${(Math.floor(Math.random() * 10000000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
           let photo = this.nextAvailablePhoto(googleMapPlace)
           location = {
             place: googleMapPlace,
             photo: photo,
-            price: price
+            price: `$${(Math.floor(Math.random() * 10000000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
+            bedrooms: Math.floor(Math.random() * 30),
+            bathrooms: Math.floor(Math.random() * 20),
+            sqft: `${(100000 + Math.floor(Math.random() * 100000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
           }
           this.$store.dispatch('map/addLocation', {id: googleMapPlace.id, location: location})
         }
