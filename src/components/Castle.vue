@@ -1,7 +1,7 @@
 <template id="">
   <div class="">
     <div class="card-border-container">
-      <div class="card border" @mouseenter="mouseEnterCastle" @mouseleave="mouseLeaveCastle">
+      <div class="card border" @click="clickedCastle" @mouseenter="mouseEnterCastle" @mouseleave="mouseLeaveCastle" :data-show-location-detail="data.id">
         <div class="card-media">
           <div class="card-media-bg-image" :style="data.style"></div>
           <div class="card-media-attribution">
@@ -21,6 +21,7 @@
 
 <script type="text/javascript">
   import { Bus } from '@/mixins/bus.js'
+
   export default {
     name: 'Castle',
     props: {
@@ -29,6 +30,9 @@
       }
     },
     methods: {
+      clickedCastle: function() {
+        Bus.$emit('clickedCastle', this.data.id)
+      },
       mouseEnterCastle: function() {
         Bus.$emit('mouseEnterCastle', this.data.id)
       },
@@ -48,8 +52,9 @@
           bedrooms: l.bedrooms,
           bathrooms: l.bathrooms,
           sqft: l.sqft,
-          title: l.photo.alt_description,
-          address: l.place.address
+          description: l.photo.description,
+          alt_description: l.photo.alt_description,
+          address: l.place.address,
         }
       }
     }

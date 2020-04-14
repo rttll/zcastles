@@ -1,5 +1,6 @@
 <template id="">
   <div class="view">
+    <CastleDetail />
     <div class="f-row border-bottom">
       <div class="f-item-3">
         <Search :showCurrentSearch=showCurrentSearch />
@@ -42,16 +43,24 @@
   import Search from '@/components/Search.vue'
   import Map from '@/components/Map.vue'
   import List from '@/components/List.vue'
+  import CastleDetail from '@/components/CastleDetail.vue'
 
   export default {
     name: 'Castles',
-    components: {Search, Map, List},
+    components: {Search, Map, List, CastleDetail},
     data () {
       return {
+        // activeCastleId: null,
+        // activeCastleLocation: null,
         showCurrentSearch: true
       }
     },
     methods: {
+      // showCastleDetail: function(id) {
+      //   // this.$store.state.map.locations['42bb36ce857287b90b6723e10a3a2b1c7ea2801b']
+      //   this.activeCastleLocation = this.$store.state.map.locations[id];
+      //   this.activeCastleId = this.activeCastleId = id;
+      // },
       mouseEnterCastle: function(placeId) {
         this.$refs.map.mouseEnterCastle(placeId)
       }

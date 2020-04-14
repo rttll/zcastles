@@ -52,7 +52,7 @@
             }
           })
           let windowContent = `
-            <a href="#" data-show-location-details="${item.place.id}">${item.price}</a>
+            <span>${item.price}</span>
             <p style="font-size:9px;line-height:1.5">${item.sqft} sq ft. ${item.bedrooms} bed. ${item.bathrooms} ba.</p>
           `
           infoWindows[item.place.id] = new this.api.InfoWindow({

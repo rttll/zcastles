@@ -6,6 +6,8 @@
 
 <script type="text/javascript">
   import map from '@/mixins/map.js'
+  import { Bus } from '@/mixins/bus.js'
+
   export default {
     name: 'Search',
     props: {
@@ -35,7 +37,10 @@
         this.$store.dispatch('map/setPlace', {address: place.formatted_address, geometry: place.geometry})
         if (this.$router.currentRoute.name === 'Home') {
           this.$router.push('castles')
+        } else {
+          Bus.$emit('placeChanged')
         }
+
       },
       init () {
         let api = this.$store.state.map.api;
