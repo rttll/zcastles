@@ -130,10 +130,10 @@ $flex-columns: 12;
   }
 }
 
+[class*="f-item"]:not(.collapse) {@include box()}
 [class*="f-item"] {
   min-height: 0px;
   flex-grow: 0;
-  @include box();
   &.center {
     margin: 0 auto;
   }

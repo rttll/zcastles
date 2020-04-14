@@ -103,7 +103,6 @@ $flex-columns: 12;
   .f-item-#{$i} {
     width: $i / $flex-columns * 100%;
   }
-
 }
 
 // Form fields

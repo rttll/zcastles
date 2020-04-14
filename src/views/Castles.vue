@@ -2,15 +2,15 @@
   <div class="view">
     <div class="f-row border-bottom">
       <div class="f-item-3">
-        <Search />
+        <Search :showCurrentSearch=showCurrentSearch />
       </div>
-      <div class="f-item">
+      <!-- <div class="f-item">
         <button type="button" name="button">For Sale</button>
-      </div>
+      </div> -->
     </div>
 
     <div class="f-row stretch f-item grow">
-      <div class="f-item-6">
+      <div class="f-item-6 collapse">
         <Map ref="map" />
       </div>
 
@@ -19,12 +19,12 @@
           <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides between">
             <p class="f-item">{{results.length}} results</p>
-            <div class="f-item">
+            <!-- <div class="f-item">
               sorty by
               <select class="" name="">
                 <option value="">foo</option>
               </select>
-            </div>
+            </div> -->
           </div>
         </header>
 
@@ -46,6 +46,11 @@
   export default {
     name: 'Castles',
     components: {Search, Map, List},
+    data () {
+      return {
+        showCurrentSearch: true
+      }
+    },
     methods: {
       mouseEnterCastle: function(placeId) {
         this.$refs.map.mouseEnterCastle(placeId)

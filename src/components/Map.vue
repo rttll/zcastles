@@ -13,10 +13,8 @@
         map: null,
         markers: {},
         infoWindows: {},
-        activeInfoWindow: {
-          infoWindow: null,
-          markerId: null
-        },
+        getNextPage: function() {return},
+        hasNextPage: false,
         apiReadyInterval: null
       }
     },
@@ -30,43 +28,6 @@
       }
     },
     methods: {
-      nearbySearch() {
-        var request = {
-          bounds: this.map.getBounds(),
-          types: ['church']
-        };
-        var api = new this.api.places.PlacesService(this.map),
-          results = [];
-
-        function processSearchResults(resp) {
-          resp.forEach((item) => {
-            results.push({
-              id: item.id,
-              address: item.vicinity,
-              geometry: item.geometry
-            })
-          });
-        }
-
-        return new Promise(function(resolve, reject) {
-          api.nearbySearch(request, function(resp, status) {
-            if (status !== 'OK') return;
-            if (status === 'ZERO_RESULTS') return results;
-            processSearchResults(resp)
-            // if (pagination.hasNextPage) {
-            //   console.log('yes')
-            //   pagination.nextPage();
-            // } else {
-            //   console.log('no')
-            // }
-            return resolve(results)
-          })
-          setTimeout(function() {
-            reject('search timeout')
-          }, 5000)
-
-        });
-      },
       closeInfoWindow(placeId) {
         this.infoWindows[placeId].close()
       },
@@ -143,6 +104,45 @@
         }
         return location;
       },
+      nearbySearch() {
+        var request = {
+          bounds: this.map.getBounds(),
+          types: ['church']
+        };
+        var service = new this.api.places.PlacesService(this.map),
+            results = [];
+
+        // var setNextPage = (pagination) => {
+        //   this.getNextPage = (pagination) => {
+        //     console.log('next')
+        //     pagination.nextPage()
+        //   }
+        // }
+
+        function processSearchResults(resp) {
+          resp.forEach((item) => {
+            results.push({
+              id: item.id,
+              address: item.vicinity,
+              geometry: item.geometry
+            })
+          });
+        }
+
+        return new Promise(function(resolve, reject) {
+          service.nearbySearch(request, function(resp, status) {
+            if (status !== 'OK') return;
+            if (status === 'ZERO_RESULTS') return results;
+            processSearchResults(resp)
+            // if (pagination.hasNextPage) setNextPage(pagination)
+            return resolve(results)
+          })
+          setTimeout(function() {
+            reject('search timeout')
+          }, 5000)
+
+        });
+      },
       searchMap() {
         this.nearbySearch().then((places) => {
           let locations = []
@@ -150,6 +150,7 @@
             let location = this.getOrCreateLocation(googleMapPlace)
             locations.push(location)
           });
+          // this.getNextPage()
           this.$store.dispatch('map/setCurrentSearch', {locations: locations})
           this.updateMarkers()
         }).catch((err) => {

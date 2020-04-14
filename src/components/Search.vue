@@ -9,7 +9,8 @@
   export default {
     name: 'Search',
     props: {
-      classlist: String
+      classlist: String,
+      showCurrentSearch: Boolean
     },
     data() {
       return {
@@ -19,7 +20,7 @@
     mixins: [map],
     computed: {
       getValue() {
-        return this.$store.state.map.place.address
+        return this.showCurrentSearch === false ? '' : this.$store.state.map.place.address
       }
     },
     methods: {
@@ -65,8 +66,17 @@
     width: 100%;
     @include input-base();
     &.big {
-      padding: 1.5rem;
+      padding: 1.7rem;
       font-size: 130%;
     }
+  }
+  .solo-center {
+    width: 100%;
+    max-width: 640px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
+    z-index: 100;
   }
 </style>
