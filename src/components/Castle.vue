@@ -1,9 +1,17 @@
 <template id="">
   <div class="">
     <div class="card-border-container">
-      <div class="card border" @click="clickedCastle" @mouseenter="mouseEnterCastle" @mouseleave="mouseLeaveCastle" :data-show-location-detail="data.id">
+      <div
+        class="card border"
+        :id="data.id"
+        :data-show-location-detail="data.id"
+        @click="clickedCastle"
+        @mouseenter="mouseEnterCastle"
+        @mouseleave="mouseLeaveCastle"
+      >
+
         <div class="card-media">
-          <div class="card-media-bg-image" :style="data.style"></div>
+          <div class="card-media-bg-image" :data-background-image="data.bg"></div>
           <div class="card-media-attribution">
             <span>Photo: </span>
             <a :href="data.html" target="_blank">{{data.credit}}</a>
@@ -21,6 +29,7 @@
 
 <script type="text/javascript">
   import { Bus } from '@/mixins/bus.js'
+  import lozad from 'lozad'
 
   export default {
     name: 'Castle',
@@ -45,7 +54,7 @@
         let l = this.location;
         return {
           id: l.place.id,
-          style: `background-image: url(${l.photo.urls.regular})`,
+          bg: l.photo.urls.regular,
           html: l.photo.links.html,
           credit: l.photo.user.name,
           price: l.price,
@@ -57,6 +66,13 @@
           address: l.place.address,
         }
       }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        const observer = lozad(document.getElementById(`${this.data.id}`).querySelector('[data-background-image]'))
+        observer.observe();
+      })
+
     }
   }
 </script>

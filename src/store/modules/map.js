@@ -22,15 +22,13 @@ const getters = {
 
 const mutations = {
   SET_CURRENT_SEARCH (state, payload) {
-    // let clonedeep = require('lodash/clonedeep');
-    // let current = clonedeep(state.currentSearch)
-    let newSearch = payload.locations;
-    for (let k in state.currentSearch) {
-      if (payload.removeIDs.indexOf(k) < 0) {
-        newSearch[k] = state.currentSearch[k]
+    let newSearch = {...state.currentSearch, ...payload.locations}
+    for (let k in newSearch) {
+      if (payload.removeIDs.indexOf(k) > -1) {
+        delete newSearch[k]
       }
     }
-    state.currentSearch = newSearch;
+    state.currentSearch = newSearch
   },
   addLocation (state, payload) {
     state.locations[payload.id] = payload.location

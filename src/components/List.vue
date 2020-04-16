@@ -15,20 +15,6 @@
       locations: function() {
         return this.$store.state.map.currentSearch
       }
-    },
-    methods: {
-      subscribe() {
-        this.$store.subscribe((mutation) => {
-          if (mutation.type === 'map/setCurrentSearch') {
-            // this.updateList(mutation.payload)
-          }
-        })
-      }
-    },
-    mounted() {
-      this.$nextTick(() => {
-        this.subscribe()
-      })
-    },
+    }
   }
 </script>
