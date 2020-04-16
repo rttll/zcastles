@@ -8,9 +8,7 @@ const state = {
     latLng: {lat: 37.758868753957636, lng: -122.43455562331151}
   },
   locations: {},
-  currentSearch: {
-    locations: []
-  }
+  currentSearch: {}
 }
 
 const getters = {
@@ -23,8 +21,16 @@ const getters = {
 }
 
 const mutations = {
-  setCurrentSearch (state, payload) {
-    state.currentSearch.locations = payload.locations
+  SET_CURRENT_SEARCH (state, payload) {
+    // let clonedeep = require('lodash/clonedeep');
+    // let current = clonedeep(state.currentSearch)
+    let newSearch = payload.locations;
+    for (let k in state.currentSearch) {
+      if (payload.removeIDs.indexOf(k) < 0) {
+        newSearch[k] = state.currentSearch[k]
+      }
+    }
+    state.currentSearch = newSearch;
   },
   addLocation (state, payload) {
     state.locations[payload.id] = payload.location
@@ -43,8 +49,8 @@ const mutations = {
 }
 
 const actions = {
-  setCurrentSearch (context, payload) {
-    context.commit('setCurrentSearch', payload)
+  setCurrentSearch ({commit}, payload) {
+    commit('SET_CURRENT_SEARCH', payload)
   },
   addLocation (context, payload) {
     context.commit('addLocation', payload)

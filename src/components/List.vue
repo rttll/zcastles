@@ -13,7 +13,7 @@
     components: {Castle},
     computed: {
       locations: function() {
-        return this.$store.state.map.currentSearch.locations
+        return this.$store.state.map.currentSearch
       }
     },
     methods: {

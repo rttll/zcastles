@@ -19,7 +19,7 @@
         <header>
           <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides between">
-            <p class="f-item">{{results.length}} results</p>
+            <p class="f-item">{{searchCount}} results</p>
             <!-- <div class="f-item">
               sorty by
               <select class="" name="">
@@ -66,8 +66,8 @@
       }
     },
     computed: {
-      results: function() {
-        return this.$store.state.map.currentSearch.locations
+      searchCount: function() {
+        return Object.keys(this.$store.state.map.currentSearch).length
       }
     }
   }
