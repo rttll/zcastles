@@ -11,7 +11,11 @@
       >
 
         <div class="card-media">
-          <div class="card-media-bg-image" :data-background-image="data.bg" :style="data.style"></div>
+          <div
+            class="card-media-bg-image"
+            :data-background-image="data.bg"
+            :style="data.style"  
+            ></div>
           <div class="card-media-attribution">
             <span>Photo: </span>
             <a :href="data.html" target="_blank">{{data.credit}}</a>
@@ -38,15 +42,9 @@
         type: Object
       }
     },
-    methods: {
-      clickedCastle: function() {
-        Bus.$emit('clickedCastle', this.data.id)
-      },
-      mouseEnterCastle: function() {
-        Bus.$emit('mouseEnterCastle', this.data.id)
-      },
-      mouseLeaveCastle: function() {
-        Bus.$emit('mouseLeaveCastle', this.data.id)
+    data() {
+      return {
+        observer: null
       }
     },
     computed: {
@@ -68,12 +66,30 @@
         }
       }
     },
+    methods: {
+      clickedCastle: function() {
+        Bus.$emit('clickedCastle', this.data.id)
+      },
+      mouseEnterCastle: function() {
+        Bus.$emit('mouseEnterCastle', this.data.id)
+      },
+      mouseLeaveCastle: function() {
+        Bus.$emit('mouseLeaveCastle', this.data.id)
+      },
+      resetImg: function() {
+        let el = this.$el.querySelector('[data-background-image]')
+        el.removeAttribute('data-loaded')
+        this.observer.observe();
+      }
+    },
     mounted() {
       this.$nextTick(() => {
-        const observer = lozad(document.getElementById(`${this.data.id}`).querySelector('[data-background-image]'))
-        observer.observe();
+        this.observer = lozad(document.getElementById(`${this.data.id}`).querySelector('[data-background-image]'))
+        this.observer.observe();
       })
-
+    },
+    beforeUpdate() {
+      this.resetImg()
     }
   }
 </script>

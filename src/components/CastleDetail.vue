@@ -29,7 +29,7 @@
     methods: {
       showCastleDetail: function(id) {
         this.location = this.$store.state.map.locations[id];
-        this.id = this.id = id;
+        this.id = id;
       },
       close: function() {
         this.id = null
