@@ -11,7 +11,7 @@
       >
 
         <div class="card-media">
-          <div class="card-media-bg-image" :data-background-image="data.bg"></div>
+          <div class="card-media-bg-image" :data-background-image="data.bg" :style="data.style"></div>
           <div class="card-media-attribution">
             <span>Photo: </span>
             <a :href="data.html" target="_blank">{{data.credit}}</a>
@@ -52,9 +52,11 @@
     computed: {
       data: function() {
         let l = this.location;
+        debugger
         return {
           id: l.place.id,
           bg: l.photo.urls.regular,
+          style: `background-color: ${l.photo.color}`,
           html: l.photo.links.html,
           credit: l.photo.user.name,
           price: l.price,
