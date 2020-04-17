@@ -82,6 +82,7 @@
         });
       },
       searchMap() {
+        Bus.$emit('searchStart')
         this.nearbySearch().then((googleMapPlaces) => {
           let locations = {}
           googleMapPlaces.forEach((place) => {
@@ -94,9 +95,6 @@
         })
       },
       listeners() {
-        this.map.addListener('dragstart', function() {
-          // TODO: Show feedback on list
-        })
         this.map.addListener('dragend', () => {
           this.debounceSearchMap()
         })
@@ -118,7 +116,6 @@
             this.debounceSearchMap()
           }
         })
-
       },
       isAPIReady() {
         // TODO: Could subscribe to store instead of using interval

@@ -52,7 +52,6 @@
     computed: {
       data: function() {
         let l = this.location;
-        debugger
         return {
           id: l.place.id,
           bg: l.photo.urls.regular,

@@ -13,13 +13,13 @@
 
     <div class="f-row stretch f-item grow">
       <div class="f-item-6 collapse">
-        <Map ref="map" />
+        <Map />
       </div>
 
       <div class="f-item-6">
         <header>
           <h3>Castles for Sale</h3>
-          <div class="f-row collapse-sides between">
+          <div class="f-row collapse-sides beanimate">
             <p class="f-item">{{searchCount}} results</p>
             <!-- <div class="f-item">
               sorty by
@@ -30,7 +30,7 @@
           </div>
         </header>
 
-        <List id="list" class="f-row wrap start" />
+        <List id="list" ref="list" class="f-row wrap start" />
 
       </div>
 
@@ -47,23 +47,48 @@
   import Logo from '@/components/Logo.vue'
   import CastleDetail from '@/components/CastleDetail.vue'
 
+  import { Bus } from '@/mixins/bus.js'
+
   export default {
     name: 'Castles',
     components: {Logo, Search, Map, List, CastleDetail},
     data () {
       return {
-        showCurrentSearch: true
+        showCurrentSearch: true,
+        searchCount: 0,
+        searchAnimator: {
+          interval: null,
+          newCount: 0
+        }
       }
     },
     methods: {
-      mouseEnterCastle: function(placeId) {
-        this.$refs.map.mouseEnterCastle(placeId)
+      animate: function() {
+        if (this.searchAnimator.newCount > this.searchCount) {
+          this.searchCount++
+        } else {
+          this.searchCount--
+        }
+        if (this.searchAnimator.newCount === this.searchCount) {
+          clearInterval(this.searchAnimator.interval);
+        }
       }
     },
-    computed: {
-      searchCount: function() {
-        return Object.keys(this.$store.state.map.currentSearch).length
-      }
+    mounted() {
+      Bus.$on('searchStart', () => {
+        document.getElementById('list').classList.add('searching')
+      })
+      this.$store.subscribe((mutation, state) => {
+        if (mutation.type === 'map/SET_CURRENT_SEARCH') {
+          document.getElementById('list').classList.remove('searching')
+          let newCount = Object.keys(state.map.currentSearch).length;
+          let dif = Math.abs(this.searchCount - newCount);
+          this.searchAnimator.newCount = newCount;
+          if (dif !== 0) {
+            this.searchAnimator.interval = setInterval(this.animate, 300/dif)
+          }
+        }
+      })
     }
   }
 </script>

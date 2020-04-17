@@ -18,3 +18,20 @@
     }
   }
 </script>
+
+<style lang="scss">
+  #list {
+    position: relative;
+    &.searching:before {
+      background: rgba(#fff, .7);
+      width: 100%;
+      height: 100%;
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1
+    }
+  }
+</style>
