@@ -6,6 +6,7 @@
 
 <script type="text/javascript">
   const axios = require('axios').default
+  import photos from '@/assets/photos.js'
   export default {
     name: 'App',
     data () {
@@ -36,21 +37,26 @@
       }
     },
     created: function() {
-      let unsplashSecretsURL = 'https://us-central1-thisadrian.cloudfunctions.net/zcastles-unsplash';
-      if (window.location.hostname === 'localhost') {
-        unsplashSecretsURL = 'http://localhost:8000/'
-      }
-
-      axios.get(unsplashSecretsURL).then((resp) => {
-        this.secrets = resp;
-        new Promise((resolve, reject) => {
-          this.getPhotos(resolve, reject)
-        }).then(() => {
-          this.$store.dispatch('addPhotos', {photos: this.photos})
+      const fromHardcoded = true;
+      // Cannot get CORS setup properly in g functions for production, so using above.
+      if (fromHardcoded) {
+        this.$store.dispatch('addPhotos', {photos: photos.photos})
+      } else {  
+        let unsplashSecretsURL = 'https://us-central1-thisadrian.cloudfunctions.net/zcastles-unsplash';
+        if (window.location.hostname === 'localhost') {
+          unsplashSecretsURL = 'http://localhost:8000/'
+        }
+        axios.get(unsplashSecretsURL).then((resp) => {
+          this.secrets = resp;
+          new Promise((resolve, reject) => {
+            this.getPhotos(resolve, reject)
+          }).then(() => {
+            this.$store.dispatch('addPhotos', {photos: this.photos})
+          })
+        }).catch((err) => {
+          console.log(err)
         })
-      }).catch((err) => {
-        console.log(err)
-      })
+      }
     }
   }
 </script>
