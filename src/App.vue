@@ -36,7 +36,7 @@
       }
     },
     created: function() {
-      let unsplashSecretsURL = 'https://us-central1-thisadrian.cloudfunctions.net/unsplash-secrets';
+      let unsplashSecretsURL = 'https://us-central1-thisadrian.cloudfunctions.net/zcastles-unsplash';
       if (window.location.hostname === 'localhost') {
         unsplashSecretsURL = 'http://localhost:8000/'
       }

@@ -1,5 +1,6 @@
 const production = process.NODE_ENV === 'production';
-const origin = production ? process.env.origin : '*'
+// const origin = production ? process.env.origin : '*'
+const origin = '*'
 
 // https://github.com/GoogleCloudPlatform/functions-framework-nodejs
 // TODO: deploy this on build
@@ -7,6 +8,8 @@ exports.trigger = (req, res) => {
 
   res.set('Access-Control-Allow-Origin', origin);
   res.set('Access-Control-Allow-Methods', 'GET');
+
+  console.log(req.get('origin'))
 
   const authorized = req.get('origin') === origin || !production;
 
