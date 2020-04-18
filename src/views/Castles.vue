@@ -2,13 +2,10 @@
   <div class="view">
     <CastleDetail />
     <div class="f-row border-bottom">
-      <div class="f-item-3">
-        <Search :showCurrentSearch=showCurrentSearch />
+      <div class="f-item-3 f-item-medium-6">
+        <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
       <Logo />
-      <!-- <div class="f-item">
-        <button type="button" name="button">For Sale</button>
-      </div> -->
     </div>
 
     <div class="f-row stretch f-item grow">
@@ -60,6 +57,11 @@
           interval: null,
           newCount: 0
         }
+      }
+    },
+    computed: {
+      getShowCurrentSearch: function() {
+        return this.showCurrentSearch
       }
     },
     methods: {
