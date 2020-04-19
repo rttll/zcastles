@@ -19,6 +19,10 @@ body, html {
   text-align: center;
 }
 
+nav {
+  @include box()
+}
+
 // Boxes
 .cover {
   width: 100%;
@@ -192,6 +196,7 @@ $flex-columns: 12;
 
 [class*="f-item"]:not(.collapse) {@include box()}
 [class*="f-item"] {
+  // width: 100%;
   min-height: 0px;
   flex-grow: 0;
   &.center {
@@ -210,7 +215,16 @@ $flex-columns: 12;
   .f-item-#{$i} {
     width: $i / $flex-columns * 100%;
   }
-
+  @media only screen and (max-width: #{$small-break}) {
+    .f-item-small-#{$i} {
+      width: $i / $flex-columns * 100%;
+    }
+  }
+  @media only screen and (max-width: #{$medium-break}) {
+    .f-item-medium-#{$i} {
+      width: $i / $flex-columns * 100%;
+    }
+  }
 }
 
 button {
@@ -248,6 +262,20 @@ ul.lined li {
 // Util.
 .hide {
   display: none;
+}
+
+.show {
+  display: flex;
+}
+
+.show-small-only { display: none }
+@media only screen and (max-width: #{$small-break}) {
+  .show-small-only:not(.hide) {
+    display: block;
+  }
+  .hide-small-only:not(.show) {
+    display: none;
+  }
 }
 
 .border-bottom {

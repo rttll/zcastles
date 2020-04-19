@@ -1,6 +1,9 @@
 <template id="">
   <div class="collapse-sides">
-    <Castle v-for="location in locations" :location="location" :key="location.id" class="f-item-6">
+    <Castle v-for="location in locations"
+      :location="location"
+      :key="location.id"
+      class="f-item-6 foo f-item-small-6">
     </Castle>
   </div>
 </template>
@@ -36,7 +39,7 @@
   }
   @media only screen and (max-width: #{$medium-break}) {
     #list > div {
-      width: 100%;
+      // width: 100%;
     }
   }
 </style>

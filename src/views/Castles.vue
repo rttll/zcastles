@@ -1,6 +1,7 @@
 <template id="">
   <div class="view">
     <CastleDetail />
+
     <div class="f-row border-bottom">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
@@ -8,22 +9,34 @@
       <Logo />
     </div>
 
+
+    <header class="show-small-only border-bottom">
+      <div class="f-row between">
+        <div class="f-item">
+          <h3>Castles for Sale</h3>
+          <p class="">{{searchCount}} results</p>
+        </div>
+
+        <nav class="f-item">
+          <ul class="f-row">
+            <li @click.prevent="toggleView('map')">Map</li>
+            <li @click.prevent="toggleView('list')">List</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
     <div class="f-row stretch f-item grow">
-      <div class="f-item-6 collapse">
+
+      <div class="f-item-6 f-item-small-12 collapse" :class="this.mapClass">
         <Map />
       </div>
 
-      <div class="f-item-6">
-        <header>
+      <div class="f-item-6 hide-small-only" :class="this.listClass">
+        <header class="hide-small-only">
           <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides beanimate">
             <p class="f-item">{{searchCount}} results</p>
-            <!-- <div class="f-item">
-              sorty by
-              <select class="" name="">
-                <option value="">foo</option>
-              </select>
-            </div> -->
           </div>
         </header>
 
@@ -51,6 +64,8 @@
     components: {Logo, Search, Map, List, CastleDetail},
     data () {
       return {
+        mapClass: '',
+        listClass: '',
         showCurrentSearch: true,
         searchCount: 0,
         searchAnimator: {
@@ -65,6 +80,10 @@
       }
     },
     methods: {
+      toggleView: function(view) {
+        this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'
+        this.listClass = view === 'list' ? 'f-item-small-12 show' : 'hide'
+      },
       animate: function() {
         if (this.searchAnimator.newCount > this.searchCount) {
           this.searchCount++
