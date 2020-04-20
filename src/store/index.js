@@ -12,16 +12,16 @@ export default new Vuex.Store({
     addPhotos (state, payload) {
       state.photos = payload.photos
     },
-    addGoogleMapPlaceIDToPhoto (state, payload) {
-      state.photos[payload.photoID].googleMapPlaces.push(payload.googleMapPlaceID)
+    ADD_PLACE_ID_TO_PHOTO (state, payload) {
+      state.photos[payload.photoID].mapPlaces.push(payload.placeID)
     }
   },
   actions: {
     addPhotos (context, payload) {
       context.commit('addPhotos', payload)
     },
-    addGoogleMapPlaceIDToPhoto (context, payload) {
-      context.commit('addGoogleMapPlaceIDToPhoto', payload)
+    addMapPlaceIDToPhoto (context, payload) {
+      context.commit('ADD_PLACE_ID_TO_PHOTO', payload)
     }
   },
   modules: {

@@ -23,7 +23,7 @@
 
         axios.get(url).then((resp) => {
           resp.data.forEach((item) => {
-            item.googleMapPlaces = []
+            item.mapPlaces = []
             this.photos[item.id] = item
           })
           if (resp.data.length < 30 ) {
@@ -38,7 +38,7 @@
     },
     created: function() {
       const fromHardcoded = true;
-      // Cannot get CORS setup properly in g functions for production, so using above.
+      // Cannot get CORS setup properly in g functions for production, so using above. 
       if (fromHardcoded) {
         this.$store.dispatch('addPhotos', {photos: photos.photos})
       } else {  

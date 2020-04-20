@@ -1,66 +1,32 @@
 
 const state = {
-  api: null,
-  ready: false,
-  place: {
-    address: null,
-    geometry: null,
-    latLng: {lat: 37.758868753957636, lng: -122.43455562331151}
-  },
   locations: {},
-  currentSearch: {}
-}
-
-const getters = {
-  api: (state) => {
-    return state.api
-  },
-  isReady: (state) => {
-    return state.ready
+  search: {
+    osm: null,
+    zoom: null
   }
 }
 
 const mutations = {
-  SET_CURRENT_SEARCH (state, payload) {
-    let newSearch = {...state.currentSearch, ...payload.locations}
-    for (let k in newSearch) {
-      if (payload.removeIDs.indexOf(k) > -1) {
-        delete newSearch[k]
-      }
-    }
-    state.currentSearch = newSearch
+  UPDATE_SEARCH (state, payload) {
+    state.search = {...state.search, ...payload}
   },
-  addLocation (state, payload) {
+  UPDATE_LOCATIONS (state, payload) {
+    state.locations = {...state.locations, ...payload}
+  },
+  ADD_LOCATION (state, payload) {
     state.locations[payload.id] = payload.location
-  },
-  setPlace (state, payload) {
-    state.place.address = payload.address
-    state.place.geometry = payload.geometry
-    state.place.latLng = {lat: payload.geometry.location.lat(), lng: payload.geometry.location.lng()}
-  },
-  api (state, google) {
-    state.api = google
-  },
-  ready (state) {
-    state.ready = true
   }
 }
 
+const getters = {}
+
 const actions = {
-  setCurrentSearch ({commit}, payload) {
-    commit('SET_CURRENT_SEARCH', payload)
+  updateSearch ({commit}, payload) {
+    commit('UPDATE_SEARCH', payload)
   },
   addLocation (context, payload) {
-    context.commit('addLocation', payload)
-  },
-  setPlace (context, payload) {
-    context.commit('setPlace', payload)
-  },
-  api (context, google) {
-    context.commit('api', google)
-  },
-  ready (context) {
-    context.commit('ready')
+    context.commit('ADD_LOCATION', payload)
   }
 }
 
