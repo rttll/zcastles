@@ -1,7 +1,6 @@
 <template id="">
   <div class="view">
-    <CastleDetail />
-
+    <router-view></router-view>
     <div class="f-row border-bottom">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
@@ -55,13 +54,12 @@
   import Map from '@/components/Map.vue'
   import List from '@/components/List.vue'
   import Logo from '@/components/Logo.vue'
-  import CastleDetail from '@/components/CastleDetail.vue'
 
   import { Bus } from '@/mixins/bus.js'
 
   export default {
     name: 'Castles',
-    components: {Logo, Search, Map, List, CastleDetail},
+    components: {Logo, Search, Map, List},
     data () {
       return {
         mapClass: '',
@@ -99,6 +97,10 @@
       Bus.$on('searchStart', () => {
         document.getElementById('list').classList.add('searching')
       })
+      Bus.$on('clickedCastle', id => {
+        this.$router.push({name: 'detail', params: {id: id}})
+        // this.showCastleDetail(id)
+      })      
       this.$store.subscribe((mutation) => {
         if (mutation.type === 'map/UPDATE_LOCATIONS') {
           document.getElementById('list').classList.remove('searching')

@@ -27,22 +27,20 @@
       }
     },
     methods: {
-      showCastleDetail: function(id) {
-        this.location = this.$store.state.map.locations[id];
-        this.id = id;
-      },
       close: function() {
         this.id = null
         this.location = null
+        this.$router.go(-1)
       }
     },
     mounted() {
       this.$nextTick(() => {
+        let locations = this.$store.state.map.locations
+        let id = this.$route.params.id
+        this.location = locations[id]
+        this.id = id
         Bus.$on('placeChanged', () => {
           this.close()
-        })
-        Bus.$on('clickedCastle', id => {
-          this.showCastleDetail(id)
         })
       })
     }
