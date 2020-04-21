@@ -17,8 +17,9 @@ export default {
       let removeIDs = [];
       for (let k in this.markers) {
         let marker = this.markers[k]
-        if (!this.map.getBounds().contains(marker.position)) {
-          removeIDs.push(marker.id)
+        let markerIsVisible = this.map.getBounds().contains(marker.getLatLng());
+        if (!markerIsVisible) {
+          removeIDs.push(marker.options.id)
           marker.remove()
         }
       }

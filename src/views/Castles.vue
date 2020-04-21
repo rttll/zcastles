@@ -99,10 +99,10 @@
       Bus.$on('searchStart', () => {
         document.getElementById('list').classList.add('searching')
       })
-      this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'map/SET_CURRENT_SEARCH') {
+      this.$store.subscribe((mutation) => {
+        if (mutation.type === 'map/UPDATE_LOCATIONS') {
           document.getElementById('list').classList.remove('searching')
-          let newCount = Object.keys(state.map.currentSearch).length;
+          let newCount = Object.keys(this.$store.getters['map/activeLocations']).length;
           let dif = Math.abs(this.searchCount - newCount);
           this.searchAnimator.newCount = newCount;
           if (dif !== 0) {

@@ -27,6 +27,7 @@ export default {
       if (typeof location === 'undefined') {
         let photo = this.nextAvailablePhoto(data.id)
         location = {
+          visible: true,
           place: data,
           photo: photo,
           price: `$${(Math.floor(Math.random() * 10000000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,

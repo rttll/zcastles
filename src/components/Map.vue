@@ -22,8 +22,6 @@
       }
     },
     mixins: [markers, locations],
-    computed: {
-    },
     methods: {
       closeInfoWindow(placeId) {
         this.infoWindows[placeId].close()
@@ -33,9 +31,8 @@
         this.infoWindows[placeId].open(this.map, marker)
       },
       updateView(locations) {
-        // let remove = this.removeMarkers(locations)
-        let remove = []
-        this.$store.dispatch('map/updateSearch', {locations: locations, removeIDs: remove})
+        let remove = this.removeMarkers(locations)
+        this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
         this.addMarkers(locations)
       },
       getLocations(results) {
@@ -45,11 +42,10 @@
           locations[location.place.id] = location
         }
         return locations
-
       },
       async searchMap() {
-        Bus.$emit('searchStart')
         let bounds = this.map.getBounds()
+        // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
         let bbox = 
           `${bounds.getSouthWest().lng},` +
           `${bounds.getSouthWest().lat},` +
@@ -75,9 +71,11 @@
           console.log(e)
         })
         this.map.on('dragend', () => {
+          Bus.$emit('searchStart')
           this.debounceSearchMap()
         })
         this.map.on('zoomend', () => {
+          Bus.$emit('searchStart')
           // console.log(this.map.getZoom())
           this.debounceSearchMap()
         })
@@ -114,7 +112,7 @@
         this.listeners();
         var debounce = require('lodash/debounce');
         this.debounceSearchMap = debounce(this.searchMap, 500)
-        this.debounceSearchMap()
+        this.searchMap()
       }
     },
     mounted() {
