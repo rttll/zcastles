@@ -1,13 +1,17 @@
 <template id="">
   <div class="view">
-    <router-view></router-view>
+    <div
+      class="task-bg"
+      v-if="isDetailOpen"
+    >
+      <router-view/>
+    </div>
     <div class="f-row border-bottom">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
       <Logo />
     </div>
-
 
     <header class="show-small-only border-bottom">
       <div class="f-row between">
@@ -26,7 +30,6 @@
     </header>
 
     <div class="f-row stretch f-item grow">
-
       <div class="f-item-6 f-item-small-12 collapse" :class="this.mapClass">
         <Map />
       </div>
@@ -40,11 +43,8 @@
         </header>
 
         <List id="list" ref="list" class="f-row wrap start" />
-
       </div>
-
     </div>
-
 
   </div>
 </template>
@@ -73,11 +73,15 @@
       }
     },
     computed: {
+      isDetailOpen () {
+        console.log(this.$route.name === 'detail')
+        return this.$route.name === 'detail'
+      },
       getShowCurrentSearch: function() {
         return this.showCurrentSearch
       }
     },
-    methods: {
+    methods: {   
       toggleView: function(view) {
         this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'
         this.listClass = view === 'list' ? 'f-item-small-12 show' : 'hide'
@@ -99,7 +103,6 @@
       })
       Bus.$on('clickedCastle', id => {
         this.$router.push({name: 'detail', params: {id: id}})
-        // this.showCastleDetail(id)
       })      
       this.$store.subscribe((mutation) => {
         if (mutation.type === 'map/UPDATE_LOCATIONS') {
@@ -115,3 +118,14 @@
     }
   }
 </script>
+
+
+<style lang="scss" scoped>
+  .logo {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 2000;
+  }
+</style>
+

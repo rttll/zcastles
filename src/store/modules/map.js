@@ -21,6 +21,13 @@ const mutations = {
 }
 
 const getters = {
+  getLocation (state) {
+    return (id) => {
+      for (let k in state.locations) {
+        if (k === id) return state.locations[k]
+      }
+    }
+  },
   activeLocations: state => {
     let filtered = {}
     for (let k in state.locations) {

@@ -12,12 +12,13 @@ Vue.use(VueRouter)
   },
   {
     path: '/castles',
-    name: 'Castles',
+    name: 'castles',
     component: () => import('../views/Castles.vue'),
     children: [
       {
         path: ':id',
         name: 'detail',
+        props: true,
         component: () => import('../views/CastleDetail.vue')
       }
     ]

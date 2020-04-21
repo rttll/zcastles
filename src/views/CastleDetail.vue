@@ -1,8 +1,8 @@
 <template id="">
 
-  <div v-if="id" class="modal">
+  <div class="modal">
     <a href="#" class="close" @click.prevent="close">&times;</a>
-    <h1 class="modal-title">{{location.place.address}}</h1>
+    <h1 class="modal-title">{{}}</h1>
     <Castle :location="location" />
     <div class="box">
       <h3>{{location.photo.description}}</h3>
@@ -16,29 +16,26 @@
 <script type="text/javascript">
   import Castle from '@/components/Castle.vue'
   import { Bus } from '@/mixins/bus.js'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'CastleDetail',
     components: {Castle},
-    data () {
-      return {
-        id: null,
-        location: null
+    computed: {
+      ...mapGetters({
+        getLocation: 'map/getLocation'
+      }),
+      location () {
+        return this.getLocation(this.$route.params.id)
       }
-    },
+    },    
     methods: {
-      close: function() {
-        this.id = null
-        this.location = null
-        this.$router.go(-1)
-      }
+      close () {
+        this.$router.push({ name: 'castles' })
+      },   
     },
     mounted() {
       this.$nextTick(() => {
-        let locations = this.$store.state.map.locations
-        let id = this.$route.params.id
-        this.location = locations[id]
-        this.id = id
         Bus.$on('placeChanged', () => {
           this.close()
         })
