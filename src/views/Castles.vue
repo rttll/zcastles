@@ -6,7 +6,7 @@
     >
       <router-view/>
     </div>
-    <div class="f-row border-bottom">
+    <div class="f-row border-bottom transparent-bg-9 fixed-medium">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
@@ -34,7 +34,7 @@
         <Map />
       </div>
 
-      <div class="f-item-6 hide-small-only" :class="this.listClass">
+      <div class="f-item-6 hide-small-only clear-fixed" :class="this.listClass">
         <header class="hide-small-only">
           <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides beanimate">
@@ -74,7 +74,6 @@
     },
     computed: {
       isDetailOpen () {
-        console.log(this.$route.name === 'detail')
         return this.$route.name === 'detail'
       },
       getShowCurrentSearch: function() {

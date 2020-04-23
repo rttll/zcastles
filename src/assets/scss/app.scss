@@ -117,7 +117,7 @@ nav {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 2000;
+  z-index: 2500;
   overflow-y: auto;
   .close {
     width: 100%;
@@ -268,6 +268,37 @@ ul.lined li {
   display: flex;
 }
 
+.clear-fixed {
+  @media only screen and (min-width: #{$small-break}) {
+    margin-top: 4rem;
+  }
+}
+
+.fixed-medium {
+    @media only screen and (min-width: #{$small-break}) {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+  }
+}
+
+.transparent-bg-9 {
+  &:after {
+    background: #fff;
+    content: '';
+    width: 100%;
+    height: 100%;
+    opacity: .98;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+}
+
 .show-small-only { display: none }
 @media only screen and (max-width: #{$small-break}) {
   .show-small-only:not(.hide) {
@@ -282,6 +313,6 @@ ul.lined li {
   border-bottom: $border;
 }
 
-#main-map {
-  background: pink;
+#map {
+  z-index: 1;
 }

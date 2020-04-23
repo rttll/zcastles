@@ -1,12 +1,19 @@
+const localKey = 'z-castles-current-search'
 
 const state = {
   locations: {},
-  search: null
+  search: null,
 }
 
 const mutations = {
   UPDATE_SEARCH (state, payload) {
     state.search = {...state.search, ...payload}
+    if (Object.keys(state.search).length < 1) {
+      localStorage.removeItem(localKey)
+    } else {
+      localStorage.setItem(localKey, JSON.stringify(state.search))
+    }
+    
   },
   UPDATE_LOCATIONS (state, payload) {
     let prev = state.locations;
@@ -20,7 +27,33 @@ const mutations = {
   }
 }
 
+function savedSearch() {
+  let parsed = null;
+  let stored = localStorage.getItem('z-castles-current-search')
+  if (stored !== null) {
+    parsed = JSON.parse(stored)
+  }
+  return parsed;
+}
+
 const getters = {
+  currentSearch (state) {
+    let search = state.search
+    if (search === null) {
+      search = savedSearch()
+    }
+    return search
+  },
+  currentSearchDisplay (state) {
+    let display = ''
+    if (state.search === null) {
+      let saved = savedSearch()
+      display = saved === null ? '' : saved.displayString
+    } else {
+      display = state.search.displayString
+    }
+    return display
+  },
   getLocation (state) {
     return (id) => {
       for (let k in state.locations) {

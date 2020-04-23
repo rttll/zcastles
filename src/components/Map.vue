@@ -8,7 +8,8 @@
   import markers from '@/mixins/markers.js'
   import locations from '@/mixins/locations.js'
   import { Bus } from '@/mixins/bus.js'
-  
+  import { mapGetters} from 'vuex'
+
   const axios = require('axios').default
   
   export default {
@@ -20,6 +21,9 @@
         infoWindows: {},
         locations: {}
       }
+    },
+    computed: {
+      ...mapGetters(['map/currentSearch'])
     },
     mixins: [markers, locations],
     methods: {
@@ -89,15 +93,28 @@
       subscribe() {
         // Can't get watch to work so subscribing instead
         this.$store.subscribe((mutation) => {
-          if (mutation.type === 'map/updateSearch') {
-            this.map.setCenter(this.place.latLng)
-            this.debounceSearchMap()
+          if (mutation.type === 'map/UPDATE_SEARCH') {
+            const center = mutation.payload.place.geometry.coordinates
+            this.map.setView([center[1], center[0]])
+            // this.debounceSearchMap()
           }
         })
       },
       init() {
-        
-        let map = L.map('map').setView([37.69097298486733, -122.43164062500001], 8)
+        let map = L.map('map', {
+          zoomControl: false,
+          zoom: 8
+        })
+        const currentSearch = this['map/currentSearch']
+        const defaultView = [37.69097298486733, -122.43164062500001]
+        if (currentSearch !== null) {
+          const center = currentSearch.place.geometry.coordinates
+          map.setView([center[1], center[0]])
+        } else {
+          map.setView(defaultView)
+        }
+        // eslint-disable-next-line
+        const zoom = L.control.zoom({position: 'bottomright'}).addTo(map)
 
         var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
