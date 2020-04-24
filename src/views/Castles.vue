@@ -34,7 +34,7 @@
         <Map />
       </div>
 
-      <div class="f-item-6 hide-small-only clear-fixed" :class="this.listClass">
+      <div class="f-item-6 hide-small-only clear-fixed border-left shadow-left" :class="this.listClass">
         <header class="hide-small-only">
           <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides beanimate">

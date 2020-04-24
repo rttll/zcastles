@@ -62,7 +62,7 @@
           sqft: l.sqft,
           description: l.photo.description,
           alt_description: l.photo.alt_description,
-          address: l.place.address,
+          address: l.place.address
         }
       }
     },
