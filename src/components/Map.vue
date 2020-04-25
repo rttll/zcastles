@@ -7,10 +7,9 @@
   import leaflet from 'leaflet'
   import markers from '@/mixins/markers.js'
   import locations from '@/mixins/locations.js'
+  import remote from '@/services/remote-api-proxy.js'
   import { Bus } from '@/mixins/bus.js'
   import { mapGetters} from 'vuex'
-
-  const axios = require('axios').default
   
   export default {
     name: 'Map',
@@ -47,7 +46,7 @@
         }
         return locations
       },
-      async searchMap() {
+      searchMap() {
         let bounds = this.map.getBounds()
         // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
         let bbox = 
@@ -56,19 +55,17 @@
           `${bounds.getNorthEast().lng},` +
           `${bounds.getNorthEast().lat}`;
 
-        let url = 'https://www.mapquestapi.com/search/v4/place' + 
-          '?sort=relevance&feedback=false' + 
-          '&pageSize=10&page=1&q=church' + 
-          `&key=${process.env.VUE_APP_MAPQUEST_KEY}` + 
-          `&bbox=${bbox}`
-
-        let mapQuestResp = await axios.get(url).then((resp) => {
-          return resp;
+        remote.search(bbox).then((resp) => {
+          if (resp.status === 200) {
+            let f = this.getLocations(resp.data.results)
+            this.updateView(f);
+          } else {
+            console.log(resp)
+          }
         }).catch((err) => {
           console.log(err.response.data.error)
         })
-        let f = this.getLocations(mapQuestResp.data.results)
-        this.updateView(f);
+        
       },
       listeners() {
         this.map.on('click', (e) => {
@@ -123,6 +120,7 @@
           maxZoom: 20,
           ext: 'png'
         });
+
         map.addLayer(Stamen_Toner);
         this.map = map;
         this.subscribe();

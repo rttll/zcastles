@@ -25,9 +25,9 @@
 </template>
 
 <script type="text/javascript">
+  import remote from '@/services/remote-api-proxy.js'
   import { Bus } from '@/mixins/bus.js'
   import {mapGetters} from 'vuex'
-  const axios = require('axios').default
   
   export default {
     name: 'Search',
@@ -84,10 +84,7 @@
       search() {
         let input = this.$refs.input
         if (input.value.length > 1) {
-          let key = 'I5NzLRnIQV2Dhfeal1G5DbmKjbmpsXpe'
-          let url = `http://www.mapquestapi.com/search/v3/prediction?key=${key}`
-          url += `&limit=7&collection=address,adminArea,airport,category,franchise,poi&q=${input.value}`
-          axios.get(url).then((resp) => {
+          remote.prediction(input.value).then((resp) => {
             this.processResults(resp)
           }).catch((err) => {
             console.log(err)
