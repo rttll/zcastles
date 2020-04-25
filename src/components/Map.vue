@@ -141,7 +141,7 @@
 <style lang="scss">
   @import '../../node_modules/leaflet/dist/leaflet.css';
   .marker-icon {
-    background: pink;
+    background: $primary-color;
     width: 50px;
     height: 50px;
     border: 1px solid maroon;

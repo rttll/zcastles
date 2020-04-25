@@ -6,7 +6,7 @@
       @keydown="keydown"
       @keyup="keyup"
       @focus="inputFocused"
-      placeholder="Search"
+      placeholder="Enter a Destination"
       autocomplete="off"
     >
     <ul v-if="results.length > 0">
