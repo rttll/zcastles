@@ -8,6 +8,7 @@
   import markers from '@/mixins/markers.js'
   import locations from '@/mixins/locations.js'
   import remote from '@/services/remote-api-proxy.js'
+  import NProgress from 'nprogress'
   import { Bus } from '@/mixins/bus.js'
   import { mapGetters} from 'vuex'
   
@@ -22,7 +23,7 @@
       }
     },
     computed: {
-      ...mapGetters(['map/currentSearch'])
+      ...mapGetters(['map/currentSearch', 'photosReady'])
     },
     mixins: [markers, locations],
     methods: {
@@ -37,6 +38,7 @@
         let remove = this.removeMarkers(locations)
         this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
         this.addMarkers(locations)
+        NProgress.done()
       },
       getLocations(results) {
         let locations = {}
@@ -114,24 +116,37 @@
         const zoom = L.control.zoom({position: 'bottomright'}).addTo(map)
 
         var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
           subdomains: 'abcd',
           minZoom: 0,
           maxZoom: 20,
           ext: 'png'
         });
-
         map.addLayer(Stamen_Toner);
+        
         this.map = map;
+        
         this.subscribe();
         this.listeners();
         var debounce = require('lodash/debounce');
         this.debounceSearchMap = debounce(this.searchMap, 500)
-        this.searchMap()
+        
+        if (this.photosReady) {
+          this.searchMap()
+        } else {
+          var interval = setInterval(() => {
+            if (this.photosReady) {
+              clearInterval(interval)
+              this.searchMap()
+            }
+          }, 10);        
+        }
       }
     },
     mounted() {
       this.$nextTick(() => {
+        NProgress.configure({ minimum: 0.1 });
+        NProgress.start()
         this.init()
       })
     },
@@ -140,6 +155,22 @@
 
 <style lang="scss">
   @import '../../node_modules/leaflet/dist/leaflet.css';
+  @import '../../node_modules/nprogress/nprogress.css';
+  #nprogress {
+    .bar {
+      background: $primary-color;
+      .peg {
+        box-shadow: 0 0 10px $primary-color, 0 0 5px $primary-color;
+      }
+    }
+    .bar, .spinner {
+      z-index: 3000;
+    }
+    .spinner-icon {
+      border-top-color: $primary-color;
+      border-left-color: $primary-color;
+    }
+  }
   .marker-icon {
     background: $primary-color;
     width: 50px;
