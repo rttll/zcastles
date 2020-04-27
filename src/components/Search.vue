@@ -18,7 +18,10 @@
         :class="{selected: selectedID === index}"
         @click="searchResultClicked(result)"
       >
-        {{result.name}}
+        {{result.displayString}}
+        <span> 
+          {{result.place.stateCode}}, {{result.place.countryCode}}
+        </span>
       </li>
     </ul>
   </div>
@@ -93,7 +96,7 @@
       },      
       processResults(resp) {
         this.clearResults()
-        for (let i = 0; i < 3 && i < resp.data.results.length-1; i++) {
+        for (let i = 0; i < 5 && i < resp.data.results.length-1; i++) {
           this.results.push(resp.data.results[i])
         }
       },      
@@ -156,6 +159,9 @@
       background: #fff;
       padding: 0.7rem 1rem;
       font-size: 13px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
       cursor: pointer;
       &.selected, &:hover {
         background: #efefef;
