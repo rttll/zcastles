@@ -5,8 +5,7 @@
 </template>
 
 <script type="text/javascript">
-  const axios = require('axios').default
-  import photos from '@/assets/photos.js'
+  import remote from '@/services/remote-api-proxy.js'
   export default {
     name: 'App',
     data () {
@@ -15,48 +14,13 @@
         page: 1,
         photos: {}
       }
-    },
-    methods: {
-      getPhotos(resolve, reject) {
-        var collection = 'https://api.unsplash.com/collections/9881644/photos';
-        var url = `${collection}?page=${this.page}&per_page=30&orientation=landscape&query=castles&client_id=${this.secrets.data.access}&client_secret=${this.secrets.data.secret}`;
-
-        axios.get(url).then((resp) => {
-          resp.data.forEach((item) => {
-            item.googleMapPlaces = []
-            this.photos[item.id] = item
-          })
-          if (resp.data.length < 30 ) {
-            this.secrets = null;
-            resolve()
-          } else {
-            this.page++
-            this.getPhotos(resolve, reject)
-          }
-        })
-      }
-    },
-    created: function() {
-      const fromHardcoded = true;
-      // Cannot get CORS setup properly in g functions for production, so using above.
-      if (fromHardcoded) {
-        this.$store.dispatch('addPhotos', {photos: photos.photos})
-      } else {  
-        let unsplashSecretsURL = 'https://us-central1-thisadrian.cloudfunctions.net/zcastles-unsplash';
-        if (window.location.hostname === 'localhost') {
-          unsplashSecretsURL = 'http://localhost:8000/'
-        }
-        axios.get(unsplashSecretsURL).then((resp) => {
-          this.secrets = resp;
-          new Promise((resolve, reject) => {
-            this.getPhotos(resolve, reject)
-          }).then(() => {
-            this.$store.dispatch('addPhotos', {photos: this.photos})
-          })
-        }).catch((err) => {
-          console.log(err)
-        })
-      }
+    },   
+    created: function() {  
+      remote.photos().then((resp) => {
+        this.$store.dispatch('addPhotos', {photos: resp})
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 </script>

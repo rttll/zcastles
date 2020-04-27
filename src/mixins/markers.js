@@ -10,33 +10,34 @@ export default {
         } else {
           marker = this.markers[location.place.id]
         }
-        marker.setMap(this.map)
+        marker.addTo(this.map)
       }
     },
     removeMarkers() {
       let removeIDs = [];
       for (let k in this.markers) {
         let marker = this.markers[k]
-        if (!this.map.getBounds().contains(marker.position)) {
-          removeIDs.push(marker.id)
-          marker.setMap(null);
+        let markerIsVisible = this.map.getBounds().contains(marker.getLatLng());
+        if (!markerIsVisible) {
+          removeIDs.push(marker.options.id)
+          marker.remove()
         }
       }
       return removeIDs
     },
     createMarker(location) {
-      let iconPath = this.api.SymbolPath.CIRCLE;
-      let marker = new this.api.Marker({
+      let icon = L.divIcon({
+        className: 'marker-icon',
+        html: '<div></div>'
+      })
+      let ll = [location.place.place.geometry.coordinates[1], location.place.place.geometry.coordinates[0]]
+      let marker = L.marker(ll, {
         id: location.place.id,
         price: location.price,
-        position: location.place.geometry.location,
-        icon: {
-          path: iconPath,
-          scale: 6
-        }
+        icon: icon
       })
-      this.addInfoWindow(marker, location)
-      this.addMarkerListeners(marker)
+      // this.addInfoWindow(marker, location)
+      // this.addMarkerListeners(marker)
       return marker
     },
     addInfoWindow(marker, location) {

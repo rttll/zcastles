@@ -3,10 +3,15 @@
 </template>
 
 <script type="text/javascript">
+  // eslint-disable-next-line
+  import leaflet from 'leaflet'
   import markers from '@/mixins/markers.js'
   import locations from '@/mixins/locations.js'
+  import remote from '@/services/remote-api-proxy.js'
+  import NProgress from 'nprogress'
   import { Bus } from '@/mixins/bus.js'
-
+  import { mapGetters} from 'vuex'
+  
   export default {
     name: 'Map',
     data() {
@@ -14,21 +19,13 @@
         map: null,
         markers: {},
         infoWindows: {},
-        locations: {},
-        getNextPage: function() {return},
-        hasNextPage: false,
-        apiReadyInterval: null
+        locations: {}
       }
+    },
+    computed: {
+      ...mapGetters(['map/currentSearch', 'photosReady'])
     },
     mixins: [markers, locations],
-    computed: {
-      api: function() {
-        return this.$store.state.map.api.maps
-      },
-      place: function() {
-        return this.$store.state.map.place
-      }
-    },
     methods: {
       closeInfoWindow(placeId) {
         this.infoWindows[placeId].close()
@@ -39,112 +36,147 @@
       },
       updateView(locations) {
         let remove = this.removeMarkers(locations)
-        this.$store.dispatch('map/setCurrentSearch', {locations: locations, removeIDs: remove})
+        this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
         this.addMarkers(locations)
+        NProgress.done()
       },
-      nearbySearch() {
-        var request = {
-          bounds: this.map.getBounds(),
-          types: ['church']
-        };
-        var service = new this.api.places.PlacesService(this.map),
-            results = [];
-
-        // var setNextPage = (pagination) => {
-        //   this.getNextPage = (pagination) => {
-        //     console.log('next')
-        //     pagination.nextPage()
-        //   }
-        // }
-
-        function processSearchResults(resp) {
-          resp.forEach((item) => {
-            results.push({
-              id: item.id,
-              address: item.vicinity,
-              geometry: item.geometry
-            })
-          });
+      getLocations(results) {
+        let locations = {}
+        for (let result of results) {
+          let location = this.getOrCreateLocation(result)
+          locations[location.place.id] = location
         }
-
-        return new Promise(function(resolve, reject) {
-          service.nearbySearch(request, function(resp, status) {
-            if (status !== 'OK') return;
-            if (status === 'ZERO_RESULTS') return results;
-            processSearchResults(resp)
-            // if (pagination.hasNextPage) setNextPage(pagination)
-            return resolve(results)
-          })
-          setTimeout(function() {
-            reject('search timeout')
-          }, 5000)
-
-        });
+        return locations
       },
       searchMap() {
-        Bus.$emit('searchStart')
-        this.nearbySearch().then((googleMapPlaces) => {
-          let locations = {}
-          googleMapPlaces.forEach((place) => {
-            let location = this.getOrCreateLocation(place)
-            locations[location.place.id] = location
-          });
-          this.updateView(locations);
+        let bounds = this.map.getBounds()
+        // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
+        let bbox = 
+          `${bounds.getSouthWest().lng},` +
+          `${bounds.getSouthWest().lat},` +
+          `${bounds.getNorthEast().lng},` +
+          `${bounds.getNorthEast().lat}`;
+
+        remote.search(bbox).then((resp) => {
+          if (resp.status === 200) {
+            let f = this.getLocations(resp.data.results)
+            this.updateView(f);
+          } else {
+            console.log(resp)
+          }
         }).catch((err) => {
-          console.log('places err', err)
+          console.log(err.response.data.error)
         })
+        
       },
       listeners() {
-        this.map.addListener('dragend', () => {
+        this.map.on('click', (e) => {
+          console.log(e)
+        })
+        this.map.on('dragend', () => {
+          Bus.$emit('searchStart')
           this.debounceSearchMap()
         })
-        this.map.addListener('zoom_changed', () => {
+        this.map.on('zoomend', () => {
+          Bus.$emit('searchStart')
+          // console.log(this.map.getZoom())
           this.debounceSearchMap()
         })
-        Bus.$on('mouseEnterCastle', placeId => {
-          this.openInfoWindow(placeId)
-        })
-        Bus.$on('mouseLeaveCastle', placeId => {
-          this.closeInfoWindow(placeId)
-        })
+        // Bus.$on('mouseEnterCastle', placeId => {
+        //   this.openInfoWindow(placeId)
+        // })
+        // Bus.$on('mouseLeaveCastle', placeId => {
+        //   this.closeInfoWindow(placeId)
+        // })
       },
       subscribe() {
         // Can't get watch to work so subscribing instead
         this.$store.subscribe((mutation) => {
-          if (mutation.type === 'map/setPlace') {
-            this.map.setCenter(this.place.latLng)
-            this.debounceSearchMap()
+          if (mutation.type === 'map/UPDATE_SEARCH') {
+            const center = mutation.payload.place.geometry.coordinates
+            this.map.setView([center[1], center[0]])
+            // this.debounceSearchMap()
           }
         })
       },
-      isAPIReady() {
-        // TODO: Could subscribe to store instead of using interval
-        if (this.$store.state.map.api !== null) {
-          clearInterval(this.apiReadyInterval)
-          this.init()
-        }
-      },
       init() {
-        // eslint-disable-next-line
-        let map = new this.api.Map(document.getElementById('map'), {
-          center: this.place.latLng,
-          zoom: 16,
-          disableDefaultUI: true
+        let map = L.map('map', {
+          zoomControl: false,
+          zoom: 8
         })
+        const currentSearch = this['map/currentSearch']
+        const defaultView = [37.69097298486733, -122.43164062500001]
+        if (currentSearch !== null) {
+          const center = currentSearch.place.geometry.coordinates
+          map.setView([center[1], center[0]])
+        } else {
+          map.setView(defaultView)
+        }
+        // eslint-disable-next-line
+        const zoom = L.control.zoom({position: 'bottomright'}).addTo(map)
+
+        var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          subdomains: 'abcd',
+          minZoom: 0,
+          maxZoom: 20,
+          ext: 'png'
+        });
+        map.addLayer(Stamen_Toner);
+        
         this.map = map;
+        
         this.subscribe();
         this.listeners();
         var debounce = require('lodash/debounce');
         this.debounceSearchMap = debounce(this.searchMap, 500)
-        this.$store.state.map.api.maps.event.addListenerOnce(map, 'idle', () =>{
-          this.debounceSearchMap()
-        });
+        
+        if (this.photosReady) {
+          this.searchMap()
+        } else {
+          var interval = setInterval(() => {
+            if (this.photosReady) {
+              clearInterval(interval)
+              this.searchMap()
+            }
+          }, 10);        
+        }
       }
     },
     mounted() {
       this.$nextTick(() => {
-        this.apiReadyInterval = setInterval(this.isAPIReady, 10)
+        NProgress.configure({ minimum: 0.1 });
+        NProgress.start()
+        this.init()
       })
     },
   }
 </script>
+
+<style lang="scss">
+  @import '../../node_modules/leaflet/dist/leaflet.css';
+  @import '../../node_modules/nprogress/nprogress.css';
+  #nprogress {
+    .bar {
+      background: $primary-color;
+      .peg {
+        box-shadow: 0 0 10px $primary-color, 0 0 5px $primary-color;
+      }
+    }
+    .bar, .spinner {
+      z-index: 3000;
+    }
+    .spinner-icon {
+      border-top-color: $primary-color;
+      border-left-color: $primary-color;
+    }
+  }
+  .marker-icon {
+    background: $primary-color;
+    width: 50px;
+    height: 50px;
+    border: 1px solid maroon;
+    border-radius: 50%;
+    
+  }
+</style>

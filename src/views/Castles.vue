@@ -1,14 +1,17 @@
 <template id="">
   <div class="view">
-    <CastleDetail />
-
-    <div class="f-row border-bottom">
+    <div
+      class="task-bg"
+      v-if="isDetailOpen"
+    >
+      <router-view/>
+    </div>
+    <div class="f-row border-bottom transparent-bg-9 fixed-medium">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
       <Logo />
     </div>
-
 
     <header class="show-small-only border-bottom">
       <div class="f-row between">
@@ -27,12 +30,11 @@
     </header>
 
     <div class="f-row stretch f-item grow">
-
       <div class="f-item-6 f-item-small-12 collapse" :class="this.mapClass">
         <Map />
       </div>
 
-      <div class="f-item-6 hide-small-only" :class="this.listClass">
+      <div class="f-item-6 hide-small-only clear-fixed border-left shadow-left" :class="this.listClass">
         <header class="hide-small-only">
           <h3>Castles for Sale</h3>
           <div class="f-row collapse-sides beanimate">
@@ -41,11 +43,8 @@
         </header>
 
         <List id="list" ref="list" class="f-row wrap start" />
-
       </div>
-
     </div>
-
 
   </div>
 </template>
@@ -55,13 +54,12 @@
   import Map from '@/components/Map.vue'
   import List from '@/components/List.vue'
   import Logo from '@/components/Logo.vue'
-  import CastleDetail from '@/components/CastleDetail.vue'
 
   import { Bus } from '@/mixins/bus.js'
 
   export default {
     name: 'Castles',
-    components: {Logo, Search, Map, List, CastleDetail},
+    components: {Logo, Search, Map, List},
     data () {
       return {
         mapClass: '',
@@ -75,11 +73,14 @@
       }
     },
     computed: {
+      isDetailOpen () {
+        return this.$route.name === 'detail'
+      },
       getShowCurrentSearch: function() {
         return this.showCurrentSearch
       }
     },
-    methods: {
+    methods: {   
       toggleView: function(view) {
         this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'
         this.listClass = view === 'list' ? 'f-item-small-12 show' : 'hide'
@@ -99,10 +100,13 @@
       Bus.$on('searchStart', () => {
         document.getElementById('list').classList.add('searching')
       })
-      this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'map/SET_CURRENT_SEARCH') {
+      Bus.$on('clickedCastle', id => {
+        this.$router.push({name: 'detail', params: {id: id}})
+      })      
+      this.$store.subscribe((mutation) => {
+        if (mutation.type === 'map/UPDATE_LOCATIONS') {
           document.getElementById('list').classList.remove('searching')
-          let newCount = Object.keys(state.map.currentSearch).length;
+          let newCount = Object.keys(this.$store.getters['map/activeLocations']).length;
           let dif = Math.abs(this.searchCount - newCount);
           this.searchAnimator.newCount = newCount;
           if (dif !== 0) {
@@ -113,3 +117,14 @@
     }
   }
 </script>
+
+
+<style lang="scss" scoped>
+  .logo {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 2000;
+  }
+</style>
+

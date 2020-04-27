@@ -1,66 +1,84 @@
+const localKey = 'z-castles-current-search'
 
 const state = {
-  api: null,
-  ready: false,
-  place: {
-    address: null,
-    geometry: null,
-    latLng: {lat: 37.758868753957636, lng: -122.43455562331151}
-  },
   locations: {},
-  currentSearch: {}
-}
-
-const getters = {
-  api: (state) => {
-    return state.api
-  },
-  isReady: (state) => {
-    return state.ready
-  }
+  search: null,
 }
 
 const mutations = {
-  SET_CURRENT_SEARCH (state, payload) {
-    let newSearch = {...state.currentSearch, ...payload.locations}
-    for (let k in newSearch) {
-      if (payload.removeIDs.indexOf(k) > -1) {
-        delete newSearch[k]
+  UPDATE_SEARCH (state, payload) {
+    state.search = {...state.search, ...payload}
+    if (Object.keys(state.search).length < 1) {
+      localStorage.removeItem(localKey)
+    } else {
+      localStorage.setItem(localKey, JSON.stringify(state.search))
+    }
+    
+  },
+  UPDATE_LOCATIONS (state, payload) {
+    let prev = state.locations;
+    for (let id of payload.remove) {
+      prev[id].visible = false;
+    }
+    state.locations = {...prev, ...payload.locations}
+  },
+  ADD_LOCATION (state, payload) {
+    state.locations[payload.id] = payload.location
+  }
+}
+
+function savedSearch() {
+  let parsed = null;
+  let stored = localStorage.getItem('z-castles-current-search')
+  if (stored !== null) {
+    parsed = JSON.parse(stored)
+  }
+  return parsed;
+}
+
+const getters = {
+  currentSearch (state) {
+    let search = state.search
+    if (search === null) {
+      search = savedSearch()
+    }
+    return search
+  },
+  currentSearchDisplay (state) {
+    let display = ''
+    if (state.search === null) {
+      let saved = savedSearch()
+      display = saved === null ? '' : saved.displayString
+    } else {
+      display = state.search.displayString
+    }
+    return display
+  },
+  getLocation (state) {
+    return (id) => {
+      for (let k in state.locations) {
+        if (k === id) return state.locations[k]
       }
     }
-    state.currentSearch = newSearch
   },
-  addLocation (state, payload) {
-    state.locations[payload.id] = payload.location
-  },
-  setPlace (state, payload) {
-    state.place.address = payload.address
-    state.place.geometry = payload.geometry
-    state.place.latLng = {lat: payload.geometry.location.lat(), lng: payload.geometry.location.lng()}
-  },
-  api (state, google) {
-    state.api = google
-  },
-  ready (state) {
-    state.ready = true
+  activeLocations: state => {
+    let filtered = {}
+    for (let k in state.locations) {
+      if (state.locations[k].visible) filtered[k] = state.locations[k]
+    }
+    return filtered
   }
 }
 
 const actions = {
-  setCurrentSearch ({commit}, payload) {
-    commit('SET_CURRENT_SEARCH', payload)
+  updateSearch ({commit}, payload) {
+    commit('UPDATE_SEARCH', payload)
   },
+  updateLocations ({commit}, payload) {
+    commit('UPDATE_LOCATIONS', payload)
+  },  
   addLocation (context, payload) {
-    context.commit('addLocation', payload)
-  },
-  setPlace (context, payload) {
-    context.commit('setPlace', payload)
-  },
-  api (context, google) {
-    context.commit('api', google)
-  },
-  ready (context) {
-    context.commit('ready')
+    context.commit('ADD_LOCATION', payload)
   }
 }
 

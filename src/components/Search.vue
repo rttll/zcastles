@@ -1,13 +1,37 @@
 <template id="">
   <div class="search-box">
-    <input id="search" type="text" ref="search" :class="classlist" :value="getValue" @focus="clearValue" @blur="setValue">
+    <input id="search" type="text" ref="input"
+      :class="classlist" 
+      value=""
+      @keydown="keydown"
+      @keyup="keyup"
+      @focus="inputFocused"
+      placeholder="Enter a Destination"
+      autocomplete="off"
+    >
+    <ul v-if="results.length > 0">
+      <li 
+        v-for="(result, index) in results" 
+        :key="index" 
+        :data-index="index"
+        tabindex="0" 
+        :class="{selected: selectedID === index}"
+        @click="searchResultClicked(result)"
+      >
+        {{result.displayString}}
+        <span> 
+          {{result.place.stateCode}}, {{result.place.countryCode}}
+        </span>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script type="text/javascript">
-  import map from '@/mixins/map.js'
+  import remote from '@/services/remote-api-proxy.js'
   import { Bus } from '@/mixins/bus.js'
-
+  import {mapGetters} from 'vuex'
+  
   export default {
     name: 'Search',
     props: {
@@ -16,63 +40,147 @@
     },
     data() {
       return {
-        search: null
+        selectedID: -1,
+        searchTerm: '',
+        results: []
       }
     },
-    mixins: [map],
     computed: {
-      getValue() {
-        return this.showCurrentSearch === false ? '' : this.$store.state.map.place.address
-      }
+      ...mapGetters({
+        searchDisplay: 'map/currentSearchDisplay'
+      })
     },
     methods: {
-      clearValue() {
-        this.$refs.search.value = ''
+      keyup(e) {
+        if (e.which !== 40 && e.which !== 38)
+          this.searchTerm = this.$refs.input.value
       },
-      setValue() {
-        this.$refs.search.value = this.getValue
+      keydown(e) {
+        if (e.which === 13) {
+          if (this.results.length > 0) {
+            let index = this.selectedID > 0 ? this.selectedID : 0
+            this.searchResultClicked(this.results[index])
+            return
+          }
+        }
+        if (e.which === 40 || e.which === 38) {
+          e.preventDefault()
+        }
+        if (e.which === 40 && this.selectedID !== this.results.length-1) {
+          this.selectedID++
+          this.$refs.input.value = this.results[this.selectedID].name
+        } else if (e.which === 38 && this.selectedID !== -1) {
+            this.selectedID--
+            if (this.selectedID === -1) {
+              this.$refs.input.value = this.searchTerm
+            } else {
+              this.$refs.input.value = this.results[this.selectedID].name
+            }
+        } else {
+          if (this.$refs.input.value.length > 1) {
+            this.debounceSearch()
+          } else {
+            this.clearResults()
+          }
+        }
       },
-      placeChanged() {
-        var place = this.search.getPlace();
-        this.$store.dispatch('map/setPlace', {address: place.formatted_address, geometry: place.geometry})
-        if (this.$router.currentRoute.name === 'Home') {
-          this.$router.push('castles')
+      search() {
+        let input = this.$refs.input
+        if (input.value.length > 1) {
+          remote.prediction(input.value).then((resp) => {
+            this.processResults(resp)
+          }).catch((err) => {
+            console.log(err)
+          })
+        }
+      },      
+      processResults(resp) {
+        this.clearResults()
+        for (let i = 0; i < 5 && i < resp.data.results.length-1; i++) {
+          this.results.push(resp.data.results[i])
+        }
+      },      
+      searchResultClicked(data) {
+        this.$store.dispatch('map/updateSearch', data)
+        this.clearResults()
+        if (this.$router.currentRoute.name !== 'castles') {
+          this.$router.push('/castles')
         } else {
           Bus.$emit('placeChanged')
         }
-
+      },        
+      clearResults() {
+        this.results = []
+      },
+      inputFocused() {
+        if (this.$refs.input.value.length > 2) {
+          this.debounceSearch()
+        }
+      },
+      blurListener(e) {
+        if (e.target.closest('.search-box') === null) {
+          this.searchBoxBlurred()
+        }
+      },
+      searchBoxBlurred() {
+        this.$refs.input.value = this.searchDisplay;
+        this.clearResults()
       },
       init () {
-        let api = this.$store.state.map.api;
-        this.search = new api.maps.places.Autocomplete(
-            document.getElementById('search'), {
-                fields: ['formatted_address', 'geometry']
-                // componentRestrictions: {'country': 'us'}
-            }
-        )
-        this.search.addListener('place_changed', this.placeChanged)
-      },
+        var debounce = require('lodash/debounce')
+        this.debounceSearch = debounce(this.search, 100)
+        if (this.showCurrentSearch) this.$refs.input.value = this.searchDisplay
+        document.addEventListener('click', this.blurListener)
+      }
 
     },
     mounted () {
       this.$nextTick(() => {
-        this.loadAPI().then((api) => {
-          if (typeof api === 'object')
-            this.$store.dispatch('map/api', api)
-          this.init();
-        })
+        this.init();
       })
     }
   }
 </script>
 
 <style lang="scss">
+  .search-box {
+    position: relative;
+    ul {
+      background: #fff;
+      width: 100%;
+      border: $border;
+      border-bottom-left-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+      position: absolute;
+      top: calc(100% - 2px);
+      z-index: 100;
+    }
+    ul li {
+      background: #fff;
+      padding: 0.7rem 1rem;
+      font-size: 13px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      cursor: pointer;
+      &.selected, &:hover {
+        background: #efefef;
+      }
+    }
+  }
   input {
+    background: #efefef;
+    height: 30px;
     width: 100%;
-    @include input-base();
+    padding: 1.1rem;
+    border: 0;
+    border-radius: 15px;
+    font-size: 80%;
     &.big {
-      padding: 1.7rem;
-      font-size: 130%;
+      background: #fff;
+      @include input-base();
+      padding: 1.9rem;
+      font-size: 110%;
     }
   }
   .solo-center {

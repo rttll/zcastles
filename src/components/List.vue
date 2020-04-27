@@ -2,7 +2,7 @@
   <div class="collapse-sides">
     <Castle v-for="location in locations"
       :location="location"
-      :key="location.id"
+      :key="location.place.id"
       class="f-item-6 foo f-item-small-6">
     </Castle>
   </div>
@@ -16,7 +16,7 @@
     components: {Castle},
     computed: {
       locations: function() {
-        return this.$store.state.map.currentSearch
+        return this.$store.getters['map/activeLocations']
       }
     }
   }

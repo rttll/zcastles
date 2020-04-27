@@ -9,19 +9,24 @@ export default new Vuex.Store({
     photos: {},
   },
   mutations: {
-    addPhotos (state, payload) {
+    ADD_PHOTOS (state, payload) {
       state.photos = payload.photos
     },
-    addGoogleMapPlaceIDToPhoto (state, payload) {
-      state.photos[payload.photoID].googleMapPlaces.push(payload.googleMapPlaceID)
+    ADD_PLACE_ID_TO_PHOTO (state, payload) {
+      state.photos[payload.photoID].mapPlaces.push(payload.placeID)
+    }
+  },
+  getters: {
+    photosReady(state) {
+      return Object.keys(state.photos).length > 0
     }
   },
   actions: {
     addPhotos (context, payload) {
-      context.commit('addPhotos', payload)
+      context.commit('ADD_PHOTOS', payload)
     },
-    addGoogleMapPlaceIDToPhoto (context, payload) {
-      context.commit('addGoogleMapPlaceIDToPhoto', payload)
+    addMapPlaceIDToPhoto (context, payload) {
+      context.commit('ADD_PLACE_ID_TO_PHOTO', payload)
     }
   },
   modules: {

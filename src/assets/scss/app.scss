@@ -1,17 +1,17 @@
 html * {
   margin: 0;
   padding: 0;
+  font-family: 'Alegreya', serif;
   line-height: 1;
   box-sizing: border-box;
-  outline-color: blueviolet;
-  outline-width: 1px;
+  outline-color: $primary-color;
+  outline-width: 2px;
 }
 
 body, html {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: "Helvetica Neue", sans-serif;
 }
 
 // Type
@@ -37,19 +37,24 @@ nav {
   padding: 0.5rem;
   position: relative;
   &.border {
-    border: 1px solid #efefef;
+    border: 1px solid #b1b1b1;
     border-radius: $border-radius;
     padding: 0;
+    .card-media {
+      border-top-right-radius: $border-radius;
+      border-top-left-radius: $border-radius;
+    }
   }
-  transition: box-shadow .5s;
+  transition: border-color .25s;
   #list & {
     cursor: pointer;
   }
   &:hover {
     #list & {
-      box-shadow: 1px 1px 2px 2px rgba(#4d4d4d, .07);
+      border-color: $primary-color;
+      // box-shadow: 1px 1px 2px 2px rgba(#4d4d4d, .07);
       .card-media-bg-image {
-        transform: translate3d(-50%, -50%, 0) scale(1.03);
+        // transform: translate3d(-50%, -50%, 0) scale(1.03);
       }
     }
   }
@@ -71,7 +76,7 @@ nav {
   bottom: 5px;
   > * {
     font-size: 8px;
-    font-family: Arial, sans-serif;
+    font-family: 'Alegreya', serif;
     color: #efefef;
   }
   .modal & > * {
@@ -117,7 +122,7 @@ nav {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 2500;
   overflow-y: auto;
   .close {
     width: 100%;
@@ -268,6 +273,37 @@ ul.lined li {
   display: flex;
 }
 
+.clear-fixed {
+  @media only screen and (min-width: #{$small-break}) {
+    margin-top: 4rem;
+  }
+}
+
+.fixed-medium {
+    @media only screen and (min-width: #{$small-break}) {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+  }
+}
+
+.transparent-bg-9 {
+  &:after {
+    background: #fff;
+    content: '';
+    width: 100%;
+    height: 100%;
+    opacity: .98;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+}
+
 .show-small-only { display: none }
 @media only screen and (max-width: #{$small-break}) {
   .show-small-only:not(.hide) {
@@ -281,7 +317,14 @@ ul.lined li {
 .border-bottom {
   border-bottom: $border;
 }
+.border-left {
+  border-left: $border;
+}
+.shadow-left {
+  box-shadow: 10px -9px 13px 11px #efefef;
+  z-index: 1;
+}
 
-#main-map {
-  background: pink;
+#map {
+  z-index: 1;
 }
