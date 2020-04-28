@@ -11,6 +11,7 @@ export default new Vuex.Store({
   mutations: {
     ADD_PHOTOS (state, payload) {
       state.photos = payload.photos
+      localStorage.setItem('zcastles-photos', JSON.stringify(payload.photos))
     },
     ADD_PLACE_ID_TO_PHOTO (state, payload) {
       state.photos[payload.photoID].mapPlaces.push(payload.placeID)

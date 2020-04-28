@@ -15,12 +15,18 @@
         photos: {}
       }
     },   
-    created: function() {  
-      remote.photos().then((resp) => {
-        this.$store.dispatch('addPhotos', {photos: resp})
-      }).catch((err) => {
-        console.log(err)
-      })
+    created: function() { 
+      // TODO: Could refresh after x days 
+      const photos = localStorage.getItem('zcastles-photos')
+      if (photos !== null) {
+        this.$store.dispatch('addPhotos', {photos: JSON.parse(photos)})
+      } else {
+        remote.photos().then((resp) => {
+          this.$store.dispatch('addPhotos', {photos: resp})
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     }
   }
 </script>
