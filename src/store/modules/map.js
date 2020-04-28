@@ -1,11 +1,37 @@
-const localKey = 'z-castles-current-search'
+import { createHelpers } from 'vuex-map-fields';
+
+const localKey = 'zcastles-current-search'
+
+const { getMapField, updateMapField } = createHelpers({
+  getterType: 'getMapField',
+  mutationType: 'updateMapField',
+});
+
+function savedSearch() {
+  let parsed = null;
+  let stored = localStorage.getItem('zcastles-current-search')
+  if (stored !== null) {
+    parsed = JSON.parse(stored)
+  }
+  return parsed;
+}
 
 const state = {
   locations: {},
   search: null,
+  filters: {
+    prince: null,
+    minPrice: 0,
+    maxPrice: 10000000
+  }
 }
 
 const mutations = {
+  updateMapField,
+  UPDATE_FILTERS (state, payload) {
+    state.filters = {...state.filters, ...payload}
+    localStorage.setItem('zcastles-filters', JSON.stringify(state.filters))
+  },
   UPDATE_SEARCH (state, payload) {
     state.search = {...state.search, ...payload}
     if (Object.keys(state.search).length < 1) {
@@ -13,7 +39,6 @@ const mutations = {
     } else {
       localStorage.setItem(localKey, JSON.stringify(state.search))
     }
-    
   },
   UPDATE_LOCATIONS (state, payload) {
     let prev = state.locations;
@@ -27,16 +52,16 @@ const mutations = {
   }
 }
 
-function savedSearch() {
-  let parsed = null;
-  let stored = localStorage.getItem('z-castles-current-search')
-  if (stored !== null) {
-    parsed = JSON.parse(stored)
-  }
-  return parsed;
-}
-
 const getters = {
+  getMapField,
+  filters (state) {
+    let filters = state.filters
+    let stored = localStorage.getItem('zcastles-filters')
+    if (stored != null) {
+      filters = JSON.parse(stored)
+    }
+    return filters
+  },
   currentSearch (state) {
     let search = state.search
     if (search === null) {
@@ -61,16 +86,30 @@ const getters = {
       }
     }
   },
-  activeLocations: state => {
-    let filtered = {}
-    for (let k in state.locations) {
-      if (state.locations[k].visible) filtered[k] = state.locations[k]
+  activeLocations: (state, getters) => {
+    var values = require('lodash/values');
+    var filter = require('lodash/filter');
+
+    var unfiltered = values(state.locations);
+    var filtered = filter(unfiltered, ({visible, price}) => 
+      visible === true &&
+      price >= getters.filters.minPrice &&
+      price <= getters.filters.maxPrice
+    )
+
+    var locations = {}
+    for (let location of filtered) {
+      locations[location.place.id] = location
     }
-    return filtered
+
+    return locations
   }
 }
 
 const actions = {
+  updateFilters ({commit}, payload) {
+    commit('UPDATE_FILTERS', payload)
+  },
   updateSearch ({commit}, payload) {
     commit('UPDATE_SEARCH', payload)
   },

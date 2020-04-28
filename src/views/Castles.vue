@@ -10,6 +10,13 @@
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
+      <div class="f-item-3 f-item-medium-6">
+        <label for="prince"> Includes Prince </label>
+        <input type="checkbox" id="prince" v-model="prince" />
+      </div>
+      <div class="f-item-3 f-item-medium-6">
+        <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
+      </div>
       <Logo />
     </div>
 
@@ -54,12 +61,21 @@
   import Map from '@/components/Map.vue'
   import List from '@/components/List.vue'
   import Logo from '@/components/Logo.vue'
-
+  import Range from '@/components/Range.vue'
+  
   import { Bus } from '@/mixins/bus.js'
+
+  import {mapGetters} from 'vuex'
+  import { createHelpers } from 'vuex-map-fields';
+
+  const { mapFields} = createHelpers({
+    getterType: 'map/getMapField',
+    mutationType: 'map/updateMapField'
+  })
 
   export default {
     name: 'Castles',
-    components: {Logo, Search, Map, List},
+    components: {Logo, Search, Map, List, Range},
     data () {
       return {
         mapClass: '',
@@ -73,6 +89,14 @@
       }
     },
     computed: {
+      ...mapFields(['filters.prince']),
+      ...mapGetters(['map/filters']),
+      defaultPriceRange () {
+        return {
+          low: this['map/filters'].minPrice,
+          high: this['map/filters'].maxPrice
+        }
+      },      
       isDetailOpen () {
         return this.$route.name === 'detail'
       },
@@ -81,6 +105,12 @@
       }
     },
     methods: {   
+      rangeChanged: function(range) {
+        this.$store.dispatch('map/updateFilters', range)
+      },
+      filterChanged: function() {
+        
+      },
       toggleView: function(view) {
         this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'
         this.listClass = view === 'list' ? 'f-item-small-12 show' : 'hide'
@@ -104,7 +134,7 @@
         this.$router.push({name: 'detail', params: {id: id}})
       })      
       this.$store.subscribe((mutation) => {
-        if (mutation.type === 'map/UPDATE_LOCATIONS') {
+        if (mutation.type === 'map/UPDATE_LOCATIONS' || mutation.type === 'map/updateMapField' || mutation.type === 'map/UPDATE_FILTERS') {
           document.getElementById('list').classList.remove('searching')
           let newCount = Object.keys(this.$store.getters['map/activeLocations']).length;
           let dif = Math.abs(this.searchCount - newCount);

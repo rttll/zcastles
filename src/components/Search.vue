@@ -113,9 +113,7 @@
         this.results = []
       },
       inputFocused() {
-        if (this.$refs.input.value.length > 2) {
-          this.debounceSearch()
-        }
+        document.addEventListener('click', this.blurListener)
       },
       blurListener(e) {
         if (e.target.closest('.search-box') === null) {
@@ -125,12 +123,12 @@
       searchBoxBlurred() {
         this.$refs.input.value = this.searchDisplay;
         this.clearResults()
+        document.removeEventListener('click', this.blurListener)
       },
       init () {
         var debounce = require('lodash/debounce')
         this.debounceSearch = debounce(this.search, 100)
         if (this.showCurrentSearch) this.$refs.input.value = this.searchDisplay
-        document.addEventListener('click', this.blurListener)
       }
 
     },

@@ -56,10 +56,11 @@
           style: `background-color: ${l.photo.color}`,
           html: l.photo.links.html,
           credit: l.photo.user.name,
-          price: l.price,
+          price: l.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'),
           bedrooms: l.bedrooms,
           bathrooms: l.bathrooms,
-          sqft: l.sqft,
+          sqft: l.sqft.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'),
+          prince: l.prince,
           description: l.photo.description,
           alt_description: l.photo.alt_description,
           address: l.place.address
