@@ -16,7 +16,7 @@
     .solo-center & {
       width: 200px;
       position: relative;
-      top: -5px;
+      top: -15px;
       margin: auto;
     }
   }
