@@ -1,7 +1,7 @@
 html * {
   margin: 0;
   padding: 0;
-  font-family: 'Alegreya', serif;
+  font-family: 'Alegreya Sans', sans-serif;
   line-height: 1;
   box-sizing: border-box;
   outline-color: $primary-color;
@@ -282,7 +282,7 @@ ul.lined li {
 
 .clear-fixed {
   @media only screen and (min-width: #{$small-break}) {
-    margin-top: 4rem;
+    padding-top: 5.8rem !important
   }
 }
 
