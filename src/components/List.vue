@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
   import Castle from '@/components/Castle.vue'
-
+  
   export default {
     name: 'List',
     components: {Castle},

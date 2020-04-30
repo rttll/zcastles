@@ -34,7 +34,8 @@
         let marker = this.markers[placeId];
         this.infoWindows[placeId].open(this.map, marker)
       },
-      updateView(locations) {
+      updateView(searchResults) {
+        let locations = this.getLocations(searchResults)
         let remove = this.removeMarkers(locations)
         this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
         this.addMarkers(locations)
@@ -59,8 +60,7 @@
 
         remote.search(bbox).then((resp) => {
           if (resp.status === 200) {
-            let f = this.getLocations(resp.data.results)
-            this.updateView(f);
+            this.updateView(resp.data.results);
           } else {
             console.log(resp)
           }

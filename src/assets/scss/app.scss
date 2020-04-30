@@ -238,6 +238,13 @@ button {
   @include input-base();
 }
 
+label + select {
+  margin-left: 0.3rem;
+}
+input + label {
+  padding: 0 .3rem;
+}
+
 
 // Lists
 ul li {
@@ -321,7 +328,7 @@ ul.lined li {
   border-left: $border;
 }
 .shadow-left {
-  box-shadow: 10px -9px 13px 11px #efefef;
+  box-shadow: 10px -9px 8px 7px #999;
   z-index: 1;
 }
 

@@ -1,3 +1,14 @@
+const random = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function tf() {
+  return bools[random(0, 1)]
+}
+
+// const statuses = ['sold', 'escrow']
+const bools = [true, false]
+
 export default {
   methods: {
     nextAvailablePhoto(id) {
@@ -30,10 +41,12 @@ export default {
           visible: true,
           place: data,
           photo: photo,
-          price: `$${(Math.floor(Math.random() * 10000000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
+          price: Math.floor(Math.random() * 10000000),
           bedrooms: Math.floor(Math.random() * 30),
           bathrooms: Math.floor(Math.random() * 20),
-          sqft: `${(100000 + Math.floor(Math.random() * 100000)).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+          sqft: `${(100000 + Math.floor(Math.random() * 100000))}`,
+          prince: tf(),
+          princess: tf() 
         }
         this.$store.dispatch('map/addLocation', {id: data.id, location: location})
       }

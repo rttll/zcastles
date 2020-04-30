@@ -10,6 +10,19 @@
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
+      <div class="f-item">
+        <input type="checkbox" id="prince" v-model="prince" />
+        <label for="prince">Prince Included</label>
+      </div>
+      <div class="f-item">
+        <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
+      </div>
+      <div class="f-item">
+        <Select @input="bedroomsChanged" :options="bedOptions" name="Min. Bedrooms" v-model="bedrooms" />
+      </div>
+      <div class="f-item">
+        <Select @input="bathroomsChanged" :options="bathOptions" name="Min. Bathrooms" v-model="bathrooms" />
+      </div>
       <Logo />
     </div>
 
@@ -54,12 +67,22 @@
   import Map from '@/components/Map.vue'
   import List from '@/components/List.vue'
   import Logo from '@/components/Logo.vue'
-
+  import Range from '@/components/Range.vue'
+  import Select from '@/components/Select.vue'
+  
   import { Bus } from '@/mixins/bus.js'
+
+  import {mapGetters} from 'vuex'
+  import { createHelpers } from 'vuex-map-fields';
+
+  const { mapFields} = createHelpers({
+    getterType: 'map/getMapField',
+    mutationType: 'map/updateMapField'
+  })
 
   export default {
     name: 'Castles',
-    components: {Logo, Search, Map, List},
+    components: {Logo, Search, Map, List, Range, Select},
     data () {
       return {
         mapClass: '',
@@ -73,6 +96,28 @@
       }
     },
     computed: {
+      ...mapFields(['filters.prince', 'filters.bedrooms', 'filters.bathrooms']),
+      ...mapGetters(['map/filters']),
+      bedOptions() {
+        let options = {}
+        for (let i = 1; i < 31; i++) {
+          options[`${i}`] = i
+        }
+        return options
+      },
+      bathOptions() {
+        let options = {}
+        for (let i = 1; i < 21; i++) {
+          options[`${i}`] = i
+        }
+        return options
+      },      
+      defaultPriceRange () {
+        return {
+          low: this['map/filters'].minPrice,
+          high: this['map/filters'].maxPrice
+        }
+      },      
       isDetailOpen () {
         return this.$route.name === 'detail'
       },
@@ -81,6 +126,15 @@
       }
     },
     methods: {   
+      bedroomsChanged: function(value) {
+        this.$store.dispatch('map/updateFilters', {bedrooms: value})
+      },
+      bathroomsChanged: function(value) {
+        this.$store.dispatch('map/updateFilters', {bathrooms: value})
+      },
+      rangeChanged: function(range) {
+        this.$store.dispatch('map/updateFilters', range)
+      },
       toggleView: function(view) {
         this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'
         this.listClass = view === 'list' ? 'f-item-small-12 show' : 'hide'
@@ -104,7 +158,7 @@
         this.$router.push({name: 'detail', params: {id: id}})
       })      
       this.$store.subscribe((mutation) => {
-        if (mutation.type === 'map/UPDATE_LOCATIONS') {
+        if (mutation.type === 'map/UPDATE_LOCATIONS' || mutation.type === 'map/updateMapField' || mutation.type === 'map/UPDATE_FILTERS') {
           document.getElementById('list').classList.remove('searching')
           let newCount = Object.keys(this.$store.getters['map/activeLocations']).length;
           let dif = Math.abs(this.searchCount - newCount);

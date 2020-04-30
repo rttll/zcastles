@@ -24,7 +24,8 @@
         <div class="card-content">
           <h3 class="title">{{data.price}}</h3>
           <p class="">{{data.sqft}} sq ft. {{data.bedrooms}} bed. {{data.bathrooms}} ba.</p>
-          <p class="sub-title">{{data.address}}</p>
+          <p class="sub-title">{{data.address}}</p>{{data.prince}}
+
         </div>
       </div>
     </div>
@@ -56,10 +57,11 @@
           style: `background-color: ${l.photo.color}`,
           html: l.photo.links.html,
           credit: l.photo.user.name,
-          price: l.price,
+          price: l.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'),
           bedrooms: l.bedrooms,
           bathrooms: l.bathrooms,
-          sqft: l.sqft,
+          sqft: l.sqft.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'),
+          prince: l.prince,
           description: l.photo.description,
           alt_description: l.photo.alt_description,
           address: l.place.address

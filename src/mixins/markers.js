@@ -1,6 +1,25 @@
 export default {
+  created () {
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === 'map/UPDATE_FILTERS') {
+        this.filterMarkers()
+      }
+    })    
+  },
   methods: {
+    filterMarkers() {
+      let activeLocations = this.$store.getters['map/activeLocations']
+      for (let k in this.makers) {
+        let isActive = activeLocations[k] !== null
+        if (isActive) {
+          marker.addTo(this.map)
+        } else {
+          marker.remove()
+        }
+      }
+    },
     addMarkers(locations) {
+      let activeLocations = this.$store.getters['map/activeLocations']
       for (let k in locations) {
         let marker;
         let location = locations[k]
@@ -10,7 +29,10 @@ export default {
         } else {
           marker = this.markers[location.place.id]
         }
-        marker.addTo(this.map)
+        let isActive = activeLocations[k] !== undefined
+        if (isActive) {
+          marker.addTo(this.map)
+        }
       }
     },
     removeMarkers() {
