@@ -24,7 +24,8 @@
         <div class="card-content">
           <h3 class="title">{{data.price}}</h3>
           <p class="">{{data.sqft}} sq ft. {{data.bedrooms}} bed. {{data.bathrooms}} ba.</p>
-          <p class="sub-title">{{data.address}}</p>
+          <p class="sub-title">{{data.address}}</p>{{data.prince}}
+
         </div>
       </div>
     </div>

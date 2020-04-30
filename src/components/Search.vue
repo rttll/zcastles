@@ -166,7 +166,7 @@
       }
     }
   }
-  input {
+  .search-box input {
     background: #efefef;
     height: 30px;
     width: 100%;

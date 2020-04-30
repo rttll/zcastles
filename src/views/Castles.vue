@@ -10,12 +10,18 @@
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
-      <div class="f-item-3 f-item-medium-6">
-        <label for="prince"> Includes Prince </label>
+      <div class="f-item">
         <input type="checkbox" id="prince" v-model="prince" />
+        <label for="prince">Prince Included</label>
       </div>
-      <div class="f-item-3 f-item-medium-6">
+      <div class="f-item">
         <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
+      </div>
+      <div class="f-item">
+        <Select @input="bedroomsChanged" :options="bedOptions" name="Min. Bedrooms" v-model="bedrooms" />
+      </div>
+      <div class="f-item">
+        <Select @input="bathroomsChanged" :options="bathOptions" name="Min. Bathrooms" v-model="bathrooms" />
       </div>
       <Logo />
     </div>
@@ -62,6 +68,7 @@
   import List from '@/components/List.vue'
   import Logo from '@/components/Logo.vue'
   import Range from '@/components/Range.vue'
+  import Select from '@/components/Select.vue'
   
   import { Bus } from '@/mixins/bus.js'
 
@@ -75,7 +82,7 @@
 
   export default {
     name: 'Castles',
-    components: {Logo, Search, Map, List, Range},
+    components: {Logo, Search, Map, List, Range, Select},
     data () {
       return {
         mapClass: '',
@@ -89,8 +96,22 @@
       }
     },
     computed: {
-      ...mapFields(['filters.prince']),
+      ...mapFields(['filters.prince', 'filters.bedrooms', 'filters.bathrooms']),
       ...mapGetters(['map/filters']),
+      bedOptions() {
+        let options = {}
+        for (let i = 1; i < 31; i++) {
+          options[`${i}`] = i
+        }
+        return options
+      },
+      bathOptions() {
+        let options = {}
+        for (let i = 1; i < 21; i++) {
+          options[`${i}`] = i
+        }
+        return options
+      },      
       defaultPriceRange () {
         return {
           low: this['map/filters'].minPrice,
@@ -105,11 +126,14 @@
       }
     },
     methods: {   
+      bedroomsChanged: function(value) {
+        this.$store.dispatch('map/updateFilters', {bedrooms: value})
+      },
+      bathroomsChanged: function(value) {
+        this.$store.dispatch('map/updateFilters', {bathrooms: value})
+      },
       rangeChanged: function(range) {
         this.$store.dispatch('map/updateFilters', range)
-      },
-      filterChanged: function() {
-        
       },
       toggleView: function(view) {
         this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'

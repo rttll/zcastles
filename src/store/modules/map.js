@@ -20,6 +20,8 @@ const state = {
   locations: {},
   search: null,
   filters: {
+    bedrooms: 1,
+    bathrooms: 1,
     prince: null,
     minPrice: 0,
     maxPrice: 10000000
@@ -31,6 +33,7 @@ const mutations = {
   UPDATE_FILTERS (state, payload) {
     state.filters = {...state.filters, ...payload}
     localStorage.setItem('zcastles-filters', JSON.stringify(state.filters))
+    console.log(JSON.stringify(state.filters))
   },
   UPDATE_SEARCH (state, payload) {
     state.search = {...state.search, ...payload}
@@ -91,10 +94,13 @@ const getters = {
     var filter = require('lodash/filter');
 
     var unfiltered = values(state.locations);
-    var filtered = filter(unfiltered, ({visible, price}) => 
+    var filtered = filter(unfiltered, ({visible, price, prince, bedrooms, bathrooms}) => 
       visible === true &&
       price >= getters.filters.minPrice &&
-      price <= getters.filters.maxPrice
+      prince === getters.filters.prince &&
+      bedrooms >= getters.filters.bedrooms &&
+      bathrooms >= getters.filters.bathrooms
+
     )
 
     var locations = {}
