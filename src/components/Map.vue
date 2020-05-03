@@ -1,17 +1,29 @@
 <template id="">
-  <div class="cover" id="map"></div>
+  <div class="cover" id="map">
+    <div v-if="this.map !== null">
+      <MapMarker 
+        v-for="location in activeLocations" 
+        :key="location.place.id" 
+        :location="location"
+        :map="map" 
+      />
+    </div>
+  </div>
+  
 </template>
 
 <script type="text/javascript">
   // eslint-disable-next-line
   import leaflet from 'leaflet'
   import markers from '@/mixins/markers.js'
+  import MapMarker from '@/components/Marker.vue'
   import locations from '@/mixins/locations.js'
   import remote from '@/services/remote-api-proxy.js'
   import NProgress from 'nprogress'
   import { Bus } from '@/mixins/bus.js'
   import { mapGetters} from 'vuex'
   
+
   export default {
     name: 'Map',
     data() {
@@ -22,8 +34,12 @@
         locations: {}
       }
     },
+    components: {MapMarker},
     computed: {
-      ...mapGetters(['map/currentSearch', 'photosReady'])
+      ...mapGetters(['map/currentSearch', 'photosReady']),
+      activeLocations: function() {
+        return this.$store.getters['map/activeLocations']
+      }      
     },
     mixins: [markers, locations],
     methods: {
@@ -36,9 +52,10 @@
       },
       updateView(searchResults) {
         let locations = this.getLocations(searchResults)
-        let remove = this.removeMarkers(locations)
+        // let remove = this.removeMarkers(locations)
+        let remove = []
         this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
-        this.addMarkers(locations)
+        //this.addMarkers(locations)
         NProgress.done()
       },
       getLocations(results) {
@@ -82,12 +99,6 @@
           // console.log(this.map.getZoom())
           this.debounceSearchMap()
         })
-        // Bus.$on('mouseEnterCastle', placeId => {
-        //   this.openInfoWindow(placeId)
-        // })
-        // Bus.$on('mouseLeaveCastle', placeId => {
-        //   this.closeInfoWindow(placeId)
-        // })
       },
       subscribe() {
         // Can't get watch to work so subscribing instead
@@ -170,13 +181,5 @@
       border-top-color: $primary-color;
       border-left-color: $primary-color;
     }
-  }
-  .marker-icon {
-    background: $primary-color;
-    width: 50px;
-    height: 50px;
-    border: 1px solid maroon;
-    border-radius: 50%;
-    
   }
 </style>
