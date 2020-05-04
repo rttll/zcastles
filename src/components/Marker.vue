@@ -1,10 +1,15 @@
 <template>
-  <div></div>
+  <div>
+    <Popup :data="popupData" :map="map" />
+  </div>
 </template>
 
 <script>
+  import Popup from '@/components/Popup'
+  
   export default {
     name: 'MapMarker',
+    components: {Popup},
     props: {
       visible: Boolean,
       location: Object,
@@ -18,7 +23,12 @@
     created() {
       this.createMarker()
     },
-    mounted() {
+    computed: {
+      popupData() {
+        return {
+          location: this.location
+        }
+      }
     },
     methods: {
       createMarker() {

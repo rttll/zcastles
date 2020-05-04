@@ -17,6 +17,7 @@
   import leaflet from 'leaflet'
   import markers from '@/mixins/markers.js'
   import MapMarker from '@/components/Marker.vue'
+
   import locations from '@/mixins/locations.js'
   import remote from '@/services/remote-api-proxy.js'
   import NProgress from 'nprogress'
@@ -167,6 +168,13 @@
 <style lang="scss">
   @import '../../node_modules/leaflet/dist/leaflet.css';
   @import '../../node_modules/nprogress/nprogress.css';
+
+  .leaflet-popup-content {
+    p {
+      margin: 0
+    }
+  }
+  
   #nprogress {
     .bar {
       background: $primary-color;
