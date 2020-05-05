@@ -95,6 +95,9 @@ nav {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   transition: transform .7s;
+  &.portrait {
+    height: 252%;
+  }
 }
 
 .card-content {

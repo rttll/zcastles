@@ -13,6 +13,7 @@
         <div class="card-media">
           <div
             class="card-media-bg-image"
+            :class="data.orientation"
             :data-background-image="data.bg"
             :style="data.style"  
             ></div>
@@ -65,6 +66,7 @@
           description: l.photo.description,
           alt_description: l.photo.alt_description,
           address: l.place.displayString,
+          orientation: l.photo.width > l.photo.height ? 'landscape' : 'portrait',
           visible: l.visible
         }
       }
