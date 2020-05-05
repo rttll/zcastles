@@ -29,8 +29,10 @@
     <header class="show-small-only border-bottom">
       <div class="f-row between">
         <div class="f-item">
-          <h3>Castles for Sale</h3>
-          <p class="">{{searchCount}} results</p>
+          <div class="f-row between">
+            <h3 class="f-item">Castles for Sale</h3>
+            <p class="f-item">{{searchCount}} results</p>
+          </div>
         </div>
 
         <nav class="f-item">
@@ -48,10 +50,14 @@
       </div>
 
       <div class="f-item-6 hide-small-only clear-fixed border-left shadow-left" :class="this.listClass">
-        <header class="hide-small-only">
-          <h3>Castles for Sale</h3>
-          <div class="f-row collapse-sides beanimate">
-            <p class="f-item">{{searchCount}} results</p>
+        <header class="hide-small-only f-row between">
+          <div class="f-item collapse">
+            <h3>Castles for Sale</h3>
+          </div>
+          <div class="f-item collapse">
+            <div class="f-row collapse-sides beanimate">
+              <p class="f-item">{{searchCount}} results</p>
+            </div>  
           </div>
         </header>
 
