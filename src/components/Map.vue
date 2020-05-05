@@ -1,31 +1,44 @@
 <template id="">
-  <div class="cover" id="map"></div>
+  <div class="cover" id="map">
+    <div v-if="this.map !== null">
+      <MapMarker 
+        v-for="location in activeLocations" 
+        :key="location.place.id" 
+        :location="location"
+        :map="map" 
+      />
+    </div>
+  </div>
+  
 </template>
 
 <script type="text/javascript">
   // eslint-disable-next-line
   import leaflet from 'leaflet'
-  import markers from '@/mixins/markers.js'
+  import MapMarker from '@/components/Marker.vue'
   import locations from '@/mixins/locations.js'
   import remote from '@/services/remote-api-proxy.js'
   import NProgress from 'nprogress'
   import { Bus } from '@/mixins/bus.js'
   import { mapGetters} from 'vuex'
-  
+
   export default {
     name: 'Map',
     data() {
       return {
         map: null,
-        markers: {},
         infoWindows: {},
         locations: {}
       }
     },
+    components: {MapMarker},
     computed: {
-      ...mapGetters(['map/currentSearch', 'photosReady'])
+      ...mapGetters(['map/currentSearch', 'photosReady']),
+      activeLocations: function() {
+        return this.$store.getters['map/activeLocations']
+      }  
     },
-    mixins: [markers, locations],
+    mixins: [locations],
     methods: {
       closeInfoWindow(placeId) {
         this.infoWindows[placeId].close()
@@ -36,9 +49,7 @@
       },
       updateView(searchResults) {
         let locations = this.getLocations(searchResults)
-        let remove = this.removeMarkers(locations)
-        this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
-        this.addMarkers(locations)
+        this.$store.dispatch('map/updateLocations', locations)
         NProgress.done()
       },
       getLocations(results) {
@@ -79,15 +90,8 @@
         })
         this.map.on('zoomend', () => {
           Bus.$emit('searchStart')
-          // console.log(this.map.getZoom())
           this.debounceSearchMap()
         })
-        // Bus.$on('mouseEnterCastle', placeId => {
-        //   this.openInfoWindow(placeId)
-        // })
-        // Bus.$on('mouseLeaveCastle', placeId => {
-        //   this.closeInfoWindow(placeId)
-        // })
       },
       subscribe() {
         // Can't get watch to work so subscribing instead
@@ -156,6 +160,24 @@
 <style lang="scss">
   @import '../../node_modules/leaflet/dist/leaflet.css';
   @import '../../node_modules/nprogress/nprogress.css';
+
+  // Popup styles have to go here, after leaflet.css
+  // because popup.vue css is rendered above this component
+  .leaflet-popup-content {
+    display: flex;
+    img {
+      height: 40px;
+      width: auto;
+    }
+    img + div {
+      padding-left: .5rem
+    }
+    p {
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+  
   #nprogress {
     .bar {
       background: $primary-color;
@@ -170,13 +192,5 @@
       border-top-color: $primary-color;
       border-left-color: $primary-color;
     }
-  }
-  .marker-icon {
-    background: $primary-color;
-    width: 50px;
-    height: 50px;
-    border: 1px solid maroon;
-    border-radius: 50%;
-    
   }
 </style>

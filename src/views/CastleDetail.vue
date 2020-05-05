@@ -8,7 +8,6 @@
       <h3>{{location.photo.description}}</h3>
       <p>You'll feel right at home in this incomparable {{location.photo.alt_description}}</p>
     </div>
-
   </div>
 
 </template>

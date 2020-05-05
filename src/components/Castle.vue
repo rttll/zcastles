@@ -24,8 +24,7 @@
         <div class="card-content">
           <h3 class="title">{{data.price}}</h3>
           <p class="">{{data.sqft}} sq ft. {{data.bedrooms}} bed. {{data.bathrooms}} ba.</p>
-          <p class="sub-title">{{data.address}}</p>{{data.prince}}
-
+          <p class="sub-title">{{data.address}}</p>
         </div>
       </div>
     </div>
@@ -64,7 +63,8 @@
           prince: l.prince,
           description: l.photo.description,
           alt_description: l.photo.alt_description,
-          address: l.place.address
+          address: l.place.displayString,
+          visible: l.visible
         }
       }
     },
