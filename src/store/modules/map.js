@@ -32,8 +32,6 @@ const mutations = {
   updateMapField,
   UPDATE_FILTERS (state, payload) {
     state.filters = {...state.filters, ...payload}
-    localStorage.setItem('zcastles-filters', JSON.stringify(state.filters))
-    console.log(JSON.stringify(state.filters))
   },
   UPDATE_SEARCH (state, payload) {
     state.search = {...state.search, ...payload}
@@ -44,26 +42,42 @@ const mutations = {
     }
   },
   UPDATE_LOCATIONS (state, payload) {
-    let prev = state.locations;
-    for (let id of payload.remove) {
-      prev[id].visible = false;
+    if (payload.remove) {
+      state.locations[payload.remove].visible = false
+    } else {
+      state.locations = {...state.locations, ...payload}
     }
-    state.locations = {...prev, ...payload.locations}
   },
   ADD_LOCATION (state, payload) {
     state.locations[payload.id] = payload.location
-  }
+  },
+  REMOVE_LOCATION (state, payload) {
+    state.locations[payload.id].visible = false 
+  }  
+}
+
+const actions = {
+  updateFilters ({commit}, payload) {
+    commit('UPDATE_FILTERS', payload)
+  },
+  updateSearch ({commit}, payload) {
+    commit('UPDATE_SEARCH', payload)
+  },
+  updateLocations ({commit}, payload) {
+    commit('UPDATE_LOCATIONS', payload)
+  },  
+  addLocation (context, payload) {
+    context.commit('ADD_LOCATION', payload)
+  },
+  removeLocation (context, payload) {
+    context.commit('REMOVE_LOCATION', payload)
+  }  
 }
 
 const getters = {
   getMapField,
   filters (state) {
-    let filters = state.filters
-    let stored = localStorage.getItem('zcastles-filters')
-    if (stored != null) {
-      filters = JSON.parse(stored)
-    }
-    return filters
+    return state.filters
   },
   currentSearch (state) {
     let search = state.search
@@ -94,13 +108,11 @@ const getters = {
     var filter = require('lodash/filter');
 
     var unfiltered = values(state.locations);
-    var filtered = filter(unfiltered, ({visible, price, prince, bedrooms, bathrooms}) => 
-      visible === true &&
-      price >= getters.filters.minPrice &&
-      prince === getters.filters.prince &&
-      bedrooms >= getters.filters.bedrooms &&
-      bathrooms >= getters.filters.bathrooms
-
+    var filtered = filter(unfiltered, ({visible, price, bedrooms, bathrooms}) => 
+      visible === true
+      && price >= getters.filters.minPrice
+      && bedrooms >= getters.filters.bedrooms
+      && bathrooms >= getters.filters.bathrooms
     )
 
     var locations = {}
@@ -112,20 +124,7 @@ const getters = {
   }
 }
 
-const actions = {
-  updateFilters ({commit}, payload) {
-    commit('UPDATE_FILTERS', payload)
-  },
-  updateSearch ({commit}, payload) {
-    commit('UPDATE_SEARCH', payload)
-  },
-  updateLocations ({commit}, payload) {
-    commit('UPDATE_LOCATIONS', payload)
-  },  
-  addLocation (context, payload) {
-    context.commit('ADD_LOCATION', payload)
-  }
-}
+
 
 export default {
   namespaced: true,

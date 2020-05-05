@@ -158,6 +158,7 @@
         this.$router.push({name: 'detail', params: {id: id}})
       })      
       this.$store.subscribe((mutation) => {
+        if (mutation.payload.markerRemoved !== undefined) return
         if (mutation.type === 'map/UPDATE_LOCATIONS' || mutation.type === 'map/updateMapField' || mutation.type === 'map/UPDATE_FILTERS') {
           document.getElementById('list').classList.remove('searching')
           let newCount = Object.keys(this.$store.getters['map/activeLocations']).length;

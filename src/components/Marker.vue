@@ -22,6 +22,14 @@
     },
     created() {
       this.createMarker()
+      this.map.on({
+        zoomend: () => {
+          this.mapChanged()
+        },
+        dragend: () => {
+          this.mapChanged()
+        }
+      })
     },
     computed: {
       popupData() {
@@ -31,6 +39,15 @@
       }
     },
     methods: {
+      mapChanged() {
+        let markerIsVisible = this.map.getBounds().contains(this.marker.getLatLng());
+        if (!markerIsVisible) {
+          this.$store.dispatch('map/updateLocations', {
+            markerRemoved: true,
+            remove: this.marker.options.id
+          })
+        }
+      },
       createMarker() {
         let icon = L.divIcon({
           className: 'marker-icon',

@@ -15,22 +15,18 @@
 <script type="text/javascript">
   // eslint-disable-next-line
   import leaflet from 'leaflet'
-  import markers from '@/mixins/markers.js'
   import MapMarker from '@/components/Marker.vue'
-
   import locations from '@/mixins/locations.js'
   import remote from '@/services/remote-api-proxy.js'
   import NProgress from 'nprogress'
   import { Bus } from '@/mixins/bus.js'
   import { mapGetters} from 'vuex'
-  
 
   export default {
     name: 'Map',
     data() {
       return {
         map: null,
-        markers: {},
         infoWindows: {},
         locations: {}
       }
@@ -40,9 +36,9 @@
       ...mapGetters(['map/currentSearch', 'photosReady']),
       activeLocations: function() {
         return this.$store.getters['map/activeLocations']
-      }      
+      }  
     },
-    mixins: [markers, locations],
+    mixins: [locations],
     methods: {
       closeInfoWindow(placeId) {
         this.infoWindows[placeId].close()
@@ -53,10 +49,7 @@
       },
       updateView(searchResults) {
         let locations = this.getLocations(searchResults)
-        // let remove = this.removeMarkers(locations)
-        let remove = []
-        this.$store.dispatch('map/updateLocations', {add: locations, remove: remove})
-        //this.addMarkers(locations)
+        this.$store.dispatch('map/updateLocations', locations)
         NProgress.done()
       },
       getLocations(results) {
@@ -97,7 +90,6 @@
         })
         this.map.on('zoomend', () => {
           Bus.$emit('searchStart')
-          // console.log(this.map.getZoom())
           this.debounceSearchMap()
         })
       },
@@ -169,9 +161,20 @@
   @import '../../node_modules/leaflet/dist/leaflet.css';
   @import '../../node_modules/nprogress/nprogress.css';
 
+  // Popup styles have to go here, after leaflet.css
+  // because popup.vue css is rendered above this component
   .leaflet-popup-content {
+    display: flex;
+    img {
+      height: 40px;
+      width: auto;
+    }
+    img + div {
+      padding-left: .5rem
+    }
     p {
-      margin: 0
+      margin: 0;
+      white-space: nowrap;
     }
   }
   
