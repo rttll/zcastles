@@ -13,6 +13,7 @@
         <div class="card-media">
           <div
             class="card-media-bg-image"
+            :class="data.orientation"
             :data-background-image="data.bg"
             :style="data.style"  
             ></div>
@@ -23,8 +24,8 @@
         </div>
         <div class="card-content">
           <h3 class="title">{{data.price}}</h3>
-          <p class="">{{data.sqft}} sq ft. {{data.bedrooms}} bed. {{data.bathrooms}} ba.</p>
-          <p class="sub-title">{{data.address}}</p>
+          <p class="content">{{data.sqft}} sq ft. {{data.bedrooms}} bed. {{data.bathrooms}} ba.</p>
+          <p class="content">{{data.address}}</p>
         </div>
       </div>
     </div>
@@ -33,6 +34,7 @@
 
 <script type="text/javascript">
   import { Bus } from '@/mixins/bus.js'
+  import util from '@/assets/js/util'
   import lozad from 'lozad'
 
   export default {
@@ -56,7 +58,7 @@
           style: `background-color: ${l.photo.color}`,
           html: l.photo.links.html,
           credit: l.photo.user.name,
-          price: l.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'),
+          price: util.currency(l.price),
           bedrooms: l.bedrooms,
           bathrooms: l.bathrooms,
           sqft: l.sqft.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'),
@@ -64,6 +66,7 @@
           description: l.photo.description,
           alt_description: l.photo.alt_description,
           address: l.place.displayString,
+          orientation: l.photo.width > l.photo.height ? 'landscape' : 'portrait',
           visible: l.visible
         }
       }

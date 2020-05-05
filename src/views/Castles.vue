@@ -6,22 +6,22 @@
     >
       <router-view/>
     </div>
-    <div class="f-row border-bottom transparent-bg-9 fixed-medium">
+    <div class="f-row between border-bottom transparent-bg-9 fixed-medium">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
       <div class="f-item">
-        <input type="checkbox" id="prince" v-model="prince" />
-        <label for="prince">Prince Included</label>
-      </div>
-      <div class="f-item">
-        <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
-      </div>
-      <div class="f-item">
-        <Select @input="bedroomsChanged" :options="bedOptions" name="Min. Bedrooms" v-model="bedrooms" />
-      </div>
-      <div class="f-item">
-        <Select @input="bathroomsChanged" :options="bathOptions" name="Min. Bathrooms" v-model="bathrooms" />
+        <div class="f-row">
+          <div class="f-item">
+            <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
+          </div>
+          <div class="f-item">
+            <Select @input="bedroomsChanged" :options="bedOptions" name="Min. Bedrooms" v-model="bedrooms" />
+          </div>
+          <div class="f-item">
+            <Select @input="bathroomsChanged" :options="bathOptions" name="Min. Bathrooms" v-model="bathrooms" />
+          </div>
+        </div>
       </div>
       <Logo />
     </div>
@@ -29,8 +29,10 @@
     <header class="show-small-only border-bottom">
       <div class="f-row between">
         <div class="f-item">
-          <h3>Castles for Sale</h3>
-          <p class="">{{searchCount}} results</p>
+          <div class="f-row between">
+            <h3 class="f-item">Castles for Sale</h3>
+            <p class="f-item">{{searchCount}} results</p>
+          </div>
         </div>
 
         <nav class="f-item">
@@ -48,10 +50,14 @@
       </div>
 
       <div class="f-item-6 hide-small-only clear-fixed border-left shadow-left" :class="this.listClass">
-        <header class="hide-small-only">
-          <h3>Castles for Sale</h3>
-          <div class="f-row collapse-sides beanimate">
-            <p class="f-item">{{searchCount}} results</p>
+        <header class="hide-small-only f-row between">
+          <div class="f-item collapse">
+            <h3>Castles for Sale</h3>
+          </div>
+          <div class="f-item collapse">
+            <div class="f-row collapse-sides beanimate">
+              <p class="f-item">{{searchCount}} results</p>
+            </div>  
           </div>
         </header>
 
@@ -100,14 +106,14 @@
       ...mapGetters(['map/filters']),
       bedOptions() {
         let options = {}
-        for (let i = 1; i < 31; i++) {
+        for (let i = 1; i < 11; i++) {
           options[`${i}`] = i
         }
         return options
       },
       bathOptions() {
         let options = {}
-        for (let i = 1; i < 21; i++) {
+        for (let i = 1; i < 6; i++) {
           options[`${i}`] = i
         }
         return options
