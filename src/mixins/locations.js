@@ -42,8 +42,8 @@ export default {
           place: data,
           photo: photo,
           price: Math.floor(Math.random() * 10000000),
-          bedrooms: Math.floor(Math.random() * 30),
-          bathrooms: Math.floor(Math.random() * 20),
+          bedrooms: Math.floor(Math.random() * 10),
+          bathrooms: Math.floor(Math.random() * 5),
           sqft: `${(100000 + Math.floor(Math.random() * 100000))}`,
           prince: tf(),
           princess: tf() 

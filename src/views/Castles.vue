@@ -6,22 +6,22 @@
     >
       <router-view/>
     </div>
-    <div class="f-row border-bottom transparent-bg-9 fixed-medium">
+    <div class="f-row between border-bottom transparent-bg-9 fixed-medium">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
       <div class="f-item">
-        <input type="checkbox" id="prince" v-model="prince" />
-        <label for="prince">Prince Included</label>
-      </div>
-      <div class="f-item">
-        <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
-      </div>
-      <div class="f-item">
-        <Select @input="bedroomsChanged" :options="bedOptions" name="Min. Bedrooms" v-model="bedrooms" />
-      </div>
-      <div class="f-item">
-        <Select @input="bathroomsChanged" :options="bathOptions" name="Min. Bathrooms" v-model="bathrooms" />
+        <div class="f-row">
+          <div class="f-item">
+            <Range @changed="rangeChanged" :default="defaultPriceRange" /> 
+          </div>
+          <div class="f-item">
+            <Select @input="bedroomsChanged" :options="bedOptions" name="Min. Bedrooms" v-model="bedrooms" />
+          </div>
+          <div class="f-item">
+            <Select @input="bathroomsChanged" :options="bathOptions" name="Min. Bathrooms" v-model="bathrooms" />
+          </div>
+        </div>
       </div>
       <Logo />
     </div>
@@ -100,14 +100,14 @@
       ...mapGetters(['map/filters']),
       bedOptions() {
         let options = {}
-        for (let i = 1; i < 31; i++) {
+        for (let i = 1; i < 11; i++) {
           options[`${i}`] = i
         }
         return options
       },
       bathOptions() {
         let options = {}
-        for (let i = 1; i < 21; i++) {
+        for (let i = 1; i < 6; i++) {
           options[`${i}`] = i
         }
         return options
