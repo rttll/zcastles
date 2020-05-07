@@ -100,6 +100,38 @@ nav {
   }
 }
 
+.card-media .card-media-bg-image {
+  &[data-loaded] {
+    &:after {
+      display: none;
+    }
+  }
+  &:after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: #4d4d4d;
+    border-left-color: #4d4d4d;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    animation: .45s ease-in infinite spin;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg)
+  }
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
 .card-content {
   @include box(0.5rem);
   .title {
