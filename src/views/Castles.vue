@@ -31,7 +31,7 @@
         <div class="f-item">
           <div class="f-row between">
             <h3 class="f-item">Castles for Sale</h3>
-            <p class="f-item">{{searchCount}} results</p>
+            <p class="f-item">{{resultsCount}} results</p>
           </div>
         </div>
 
@@ -56,7 +56,7 @@
           </div>
           <div class="f-item collapse">
             <div class="f-row collapse-sides beanimate">
-              <p class="f-item">{{searchCount}} results</p>
+              <p class="f-item">{{resultsCount}} results</p>
             </div>  
           </div>
         </header>
@@ -93,17 +93,12 @@
       return {
         mapClass: '',
         listClass: '',
-        showCurrentSearch: true,
-        searchCount: 0,
-        searchAnimator: {
-          interval: null,
-          newCount: 0
-        }
+        showCurrentSearch: true
       }
     },
     computed: {
       ...mapFields(['filters.prince', 'filters.bedrooms', 'filters.bathrooms']),
-      ...mapGetters(['map/filters']),
+      ...mapGetters(['map/filters', 'map/activeLocations']),
       bedOptions() {
         let options = {}
         for (let i = 1; i < 11; i++) {
@@ -129,6 +124,9 @@
       },
       getShowCurrentSearch: function() {
         return this.showCurrentSearch
+      },
+      resultsCount: function() {
+        return Object.keys(this['map/activeLocations']).length
       }
     },
     methods: {   
@@ -144,16 +142,6 @@
       toggleView: function(view) {
         this.mapClass = view === 'map' ? 'f-item-small-12 show' : 'hide'
         this.listClass = view === 'list' ? 'f-item-small-12 show' : 'hide'
-      },
-      animate: function() {
-        if (this.searchAnimator.newCount > this.searchCount) {
-          this.searchCount++
-        } else {
-          this.searchCount--
-        }
-        if (this.searchAnimator.newCount === this.searchCount) {
-          clearInterval(this.searchAnimator.interval);
-        }
       }
     },
     mounted() {
@@ -162,19 +150,13 @@
       })
       Bus.$on('clickedCastle', id => {
         this.$router.push({name: 'detail', params: {id: id}})
-      })      
+      })
       this.$store.subscribe((mutation) => {
         if (mutation.payload.markerRemoved !== undefined) return
         if (mutation.type === 'map/UPDATE_LOCATIONS' || mutation.type === 'map/updateMapField' || mutation.type === 'map/UPDATE_FILTERS') {
           document.getElementById('list').classList.remove('searching')
-          let newCount = Object.keys(this.$store.getters['map/activeLocations']).length;
-          let dif = Math.abs(this.searchCount - newCount);
-          this.searchAnimator.newCount = newCount;
-          if (dif !== 0) {
-            this.searchAnimator.interval = setInterval(this.animate, 300/dif)
-          }
         }
-      })
+      })      
     }
   }
 </script>
