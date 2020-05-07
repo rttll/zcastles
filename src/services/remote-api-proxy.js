@@ -14,7 +14,7 @@ let remoteURL = process.env[`VUE_APP_SERVICE_${env}`]
 const client = (data) => {
   let url = remoteURL;
   url += `?api=${encodeURIComponent(data.url)}`
-  url += `&keysNeeded=${data.keys}`
+  url += `&keyNames=${data.keys}`
   return axios.get(url).then((resp) => {
     return resp
   }).catch((err) => {
@@ -22,7 +22,7 @@ const client = (data) => {
   })  
 }
 
-const mapKeysNeeded = '[["key", "MAPQUEST_KEY"]]'
+const mapkeyNames = '[["key", "MAPQUEST_KEY"]]'
 
 let predictionURL = 'http://www.mapquestapi.com/search/v3/prediction?limit=7&collection=address,adminArea,airport,category,franchise,poi&q='
 const prediction = function(searchTerm) {
@@ -30,7 +30,7 @@ const prediction = function(searchTerm) {
   url += searchTerm
   let data = {
     url: url,
-    keys: mapKeysNeeded
+    keys: mapkeyNames
   }
   return client(data)
 }
@@ -41,13 +41,13 @@ const search = function(bbox) {
   url += `&bbox=${bbox}`
   let data = {
     url: url,
-    keys: mapKeysNeeded
+    keys: mapkeyNames
   } 
   return client(data)
 }
 
 const perPage = 30;
-const photoKeysNeeded = '[["client_id", "UNSPLASH_ACCESS"], ["client_secret", "UNSPLASH_SECRET"]]'
+const photokeyNames = '[["client_id", "UNSPLASH_ACCESS"], ["client_secret", "UNSPLASH_SECRET"]]'
 const photosURL  = `https://api.unsplash.com/collections/9881644/photos?per_page=${perPage}`//&orientation=landscape`
 let page = 0, batch;
 
@@ -59,7 +59,7 @@ function getPhotos(resolve, reject) {
   
   let data = {
     url: `${photosURL}&page=${page}`,
-    keys: photoKeysNeeded
+    keys: photokeyNames
   }
 
   client(data).then((resp) => {
