@@ -5,7 +5,7 @@ import map from './modules/map'
 import createPersistedState from "vuex-persistedstate";
 const persist = createPersistedState({
   key: 'zcastles',
-  paths: ['state.map.filters']
+  paths: ['map.filters']
 })
 
 Vue.use(Vuex)
