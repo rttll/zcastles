@@ -61,6 +61,7 @@
         return locations
       },
       searchMap() {
+        NProgress.start()
         let bounds = this.map.getBounds()
         // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
         let bbox = 
@@ -71,12 +72,12 @@
 
         remote.search(bbox).then((resp) => {
           if (resp.status === 200) {
-            this.updateView(resp.data.results);
+            this.updateView(resp.results);
           } else {
             console.log(resp)
           }
         }).catch((err) => {
-          console.log(err.response.data.error)
+          console.log(err)
         })
         
       },
