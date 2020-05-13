@@ -50,8 +50,6 @@
       updateView(searchResults) {
         let locations = this.getLocations(searchResults)
         this.$store.dispatch('map/updateLocations', locations)
-        console.log(Object.keys(this.$store.state.map.locations).length)
-        console.log(Object.keys(this.activeLocations).length)
         NProgress.done()
       },
       getLocations(results) {
