@@ -7,6 +7,7 @@
 
 
 import axios from "axios"
+import { Promise } from "core-js";
 
 const env = process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'DEVELOPMENT'
 let remoteURL = process.env[`VUE_APP_SERVICE_${env}`]
@@ -35,16 +36,52 @@ const prediction = function(searchTerm) {
   return client(data)
 }
 
-let mapSearchURL = 'https://www.mapquestapi.com/search/v4/place?sort=relevance&feedback=false&pageSize=10&page=1&q=church'
-const search = function(bbox) {
-  let url = mapSearchURL
-  url += `&bbox=${bbox}`
+let defaultMapSearchURL = 'https://www.mapquestapi.com/search/v4/place?sort=relevance&feedback=false&pageSize=10&page=1&q=church'
+let mapSearchURL = null, 
+    mapBBox, 
+    mapSearchData = {
+      results: [],
+      status: null
+    };
+
+function searchMap(resolve, reject) {
+  if (mapSearchURL === null) {
+    mapSearchURL = `${defaultMapSearchURL}&bbox=${mapBBox}`;
+  }
+
   let data = {
-    url: url,
+    url: mapSearchURL,
     keys: mapkeyNames
   } 
-  return client(data)
+
+  client(data).then((resp) => {
+    mapSearchData.status = resp.status
+    if (resp.status === 200) {
+      if (resp.data.pagination.nextUrl && resp.data.pagination.currentPage < 4) {
+        mapSearchData.results = mapSearchData.results.concat(resp.data.results)
+        mapSearchURL = resp.data.pagination.nextUrl;
+        searchMap(resolve, reject)
+      } else {
+        mapSearchURL = null
+        resolve(mapSearchData)
+      }
+    } else {
+      reject(resp)
+    }
+  }).catch((err) => {
+    reject(err)
+  })
 }
+
+const search = function(bbox) {
+  mapBBox = bbox;
+  return new Promise((resolve, reject) => {
+    searchMap(resolve, reject)
+  }).then(() => {
+    return mapSearchData
+  })
+}
+
 
 const perPage = 30;
 const photokeyNames = '[["client_id", "UNSPLASH_ACCESS"], ["client_secret", "UNSPLASH_SECRET"]]'
