@@ -6,7 +6,8 @@
 
 <script>
   import Popup from '@/components/Popup'
-  
+  import { Bus } from '@/mixins/bus.js'
+
   export default {
     name: 'MapMarker',
     components: {Popup},
@@ -30,6 +31,12 @@
           this.mapChanged()
         }
       })
+      // Emitted after map updates, after search changes.
+      // This is the most reliable way of knowing the map is done moving.
+      Bus.$on('searchDone', () => {
+        this.mapChanged()
+      })
+
     },
     computed: {
       popupData() {

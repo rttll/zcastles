@@ -27,6 +27,7 @@
     data() {
       return {
         map: null,
+        dragging: false,
         infoWindows: {},
         locations: {}
       }
@@ -51,6 +52,8 @@
         let locations = this.getLocations(searchResults)
         this.$store.dispatch('map/updateLocations', locations)
         NProgress.done()
+        // Used by markers to self-remove
+        Bus.$emit('searchDone')
       },
       getLocations(results) {
         let locations = {}
@@ -61,6 +64,7 @@
         return locations
       },
       searchMap() {
+        Bus.$emit('searchStart')
         NProgress.start()
         let bounds = this.map.getBounds()
         // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
@@ -86,11 +90,9 @@
           console.log(e)
         })
         this.map.on('dragend', () => {
-          Bus.$emit('searchStart')
           this.debounceSearchMap()
-        })
+        }),
         this.map.on('zoomend', () => {
-          Bus.$emit('searchStart')
           this.debounceSearchMap()
         })
       },
@@ -99,8 +101,8 @@
         this.$store.subscribe((mutation) => {
           if (mutation.type === 'map/UPDATE_SEARCH') {
             const center = mutation.payload.place.geometry.coordinates
-            this.map.setView([center[1], center[0]])
-            // this.debounceSearchMap()
+            this.map.panTo([center[1], center[0]])
+            this.debounceSearchMap()
           }
         })
       },

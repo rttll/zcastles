@@ -6,7 +6,7 @@
     >
       <router-view/>
     </div>
-    <div class="f-row between border-bottom transparent-bg-9 fixed-medium">
+    <div class="f-row between border-bottom">
       <div class="f-item-3 f-item-medium-6">
         <Search :showCurrentSearch="this.getShowCurrentSearch" />
       </div>
@@ -49,7 +49,7 @@
         <Map />
       </div>
 
-      <div class="f-item-6 hide-small-only clear-fixed border-left shadow-left" :class="this.listClass">
+      <div class="f-item-6 hide-small-only border-left shadow-left" :class="this.listClass">
         <header class="hide-small-only f-row between">
           <div class="f-item collapse">
             <h3>Castles for Sale</h3>
