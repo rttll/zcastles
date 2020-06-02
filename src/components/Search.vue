@@ -1,5 +1,5 @@
 <template id="">
-  <div class="search-box">
+  <div class="search-box" :class="searchBoxClass">
     <input id="search" type="text" ref="input"
       :class="classlist" 
       value=""
@@ -40,6 +40,7 @@
     },
     data() {
       return {
+        searchBoxClass: '',
         selectedID: -1,
         searchTerm: '',
         results: []
@@ -87,8 +88,10 @@
       search() {
         let input = this.$refs.input
         if (input.value.length > 1) {
+          this.searchBoxClass = 'loading'
           remote.prediction(input.value).then((resp) => {
             this.processResults(resp)
+            this.searchBoxClass = ''
           }).catch((err) => {
             console.log(err)
           })
@@ -174,6 +177,11 @@
     border: 0;
     border-radius: 15px;
     font-size: 80%;
+    outline: 0;
+    &:focus {
+      outline-color: rgba(#f00e31, .5);
+      outline-width: 1px;
+    }
     &.big {
       background: #fff;
       @include input-base();
@@ -181,6 +189,33 @@
       font-size: 110%;
     }
   }
+  .search-box.loading {
+    position: relative;
+    &:after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border: 2px solid transparent;
+      border-top-color: #4d4d4d;
+      border-left-color: #4d4d4d;
+      border-radius: 50%;
+      display: block;
+      position: absolute;
+      top: calc(50% - 5px);
+      right: 1rem;
+      // transform: translate3d(0, -50%, 0);
+      animation: .45s ease-in infinite spin;
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg)
+    }
+    100% {
+      transform: rotate(360deg)
+    }
+  }  
   .solo-center {
     width: 100%;
     max-width: 640px;
