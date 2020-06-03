@@ -51,7 +51,11 @@
     },
     computed: {
       data: function() {
-        let l = this.location;
+        let l = this.location, 
+            address = l.place.displayString;
+        if (l.place.place.properties.type === 'address') {
+          address = `${l.place.place.properties.street}, ${l.place.place.properties.city}, ${l.place.place.properties.stateCode} ${l.place.place.properties.postalCode}`
+        }
         return {
           id: l.place.id,
           bg: l.photo.urls.regular,
@@ -65,7 +69,7 @@
           prince: l.prince,
           description: l.photo.description,
           alt_description: l.photo.alt_description,
-          address: l.place.displayString,
+          address: address,
           orientation: l.photo.width > l.photo.height ? 'landscape' : 'portrait',
           visible: l.visible
         }
