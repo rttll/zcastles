@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
+    "start": "vue-cli-service serve --open",
     "remote": "env-cmd -f ./.env.local  functions-framework --target=trigger --port=8000 --source=./remote",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",

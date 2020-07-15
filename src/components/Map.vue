@@ -109,7 +109,7 @@
       init() {
         let map = L.map('map', {
           zoomControl: false,
-          zoom: 8
+          zoom: 12
         })
         const currentSearch = this['map/currentSearch']
         const defaultView = [37.69097298486733, -122.43164062500001]
@@ -122,18 +122,13 @@
         // eslint-disable-next-line
         const zoom = L.control.zoom({position: 'bottomright'}).addTo(map)
 
-
-        const mapBoxToken = 'key_goes_here'
-        var mapBoxTiles = L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapBoxToken}`, {
-          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        var mbToken = ''
+        L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mbToken}`, {
           maxZoom: 18,
-          id: 'mapbox/streets-v11',
-          tileSize: 512,
-          zoomOffset: -1,
-          accessToken: mapBoxToken
-        })
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' + '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+          detectRetina: true
+        }).addTo(map);
 
-        map.addLayer(mapBoxTiles);
         
         this.map = map;
         
