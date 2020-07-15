@@ -149,7 +149,7 @@
         document.getElementById('list').classList.add('searching')
       })
       Bus.$on('clickedCastle', id => {
-        this.$router.push({name: 'detail', params: {id: id}})
+        this.$router.push({name: 'detail', params: {id: id}, hash: window.location.hash})
       })
       this.$store.subscribe((mutation) => {
         if (mutation.payload.markerRemoved !== undefined) return

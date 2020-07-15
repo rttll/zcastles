@@ -32,7 +32,7 @@
     },    
     methods: {
       close () {
-        this.$router.push({ name: 'castles' })
+        this.$router.push({ name: 'castles', hash: window.location.hash })
       },   
     },
     mounted() {

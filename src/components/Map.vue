@@ -83,7 +83,23 @@
         }).catch((err) => {
           console.log(err)
         })
-        
+      },
+      saveMap() {
+        let _map = require('lodash/map');
+        let coords = _map( this.map.getCenter(), (coord) => { return Math.round( coord * 100) / 100 } )
+        window.location.hash = '#' + [this.map.getZoom()].concat(coords).join('/')
+      },
+      setMap() {
+        let hash = window.location.hash
+        let view; 
+        if (hash === '') {
+          view = [37.69097298486733, -122.43164062500001] // sfo
+        } else {
+          hash = hash.substr(1).split('/')
+          view = [hash[1], hash[2]]
+        }
+        debugger
+        this.map.setView(view)
       },
       listeners() {
         this.map.on('click', (e) => {
@@ -91,9 +107,11 @@
         })
         this.map.on('dragend', () => {
           this.debounceSearchMap()
+          this.saveMap()
         }),
         this.map.on('zoomend', () => {
           this.debounceSearchMap()
+          this.saveMap()
         })
       },
       subscribe() {
@@ -109,16 +127,8 @@
       init() {
         let map = L.map('map', {
           zoomControl: false,
-          zoom: 12
+          zoom: 14
         })
-        const currentSearch = this['map/currentSearch']
-        const defaultView = [37.69097298486733, -122.43164062500001]
-        if (currentSearch !== null) {
-          const center = currentSearch.place.geometry.coordinates
-          map.setView([center[1], center[0]])
-        } else {
-          map.setView(defaultView)
-        }
         // eslint-disable-next-line
         const zoom = L.control.zoom({position: 'bottomright'}).addTo(map)
 
@@ -126,11 +136,19 @@
         L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mbToken}`, {
           maxZoom: 18,
           attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' + '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-          detectRetina: true
+          detectRetina: false
         }).addTo(map);
 
-        
         this.map = map;
+
+        const currentSearch = this['map/currentSearch']
+        if (window.location.hash !== '' || currentSearch === null) {
+          this.setMap()
+        } else {
+          const center = currentSearch.place.geometry.coordinates
+          map.setView([center[1], center[0]])
+          this.saveMap()
+        }
         
         this.subscribe();
         this.listeners();
