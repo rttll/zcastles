@@ -85,6 +85,7 @@
         })
       },
       saveMap() {
+        if (this.$route.name === 'detail') return false
         let _map = require('lodash/map');
         let coords = _map( this.map.getCenter(), (coord) => { return Math.round( coord * 100) / 100 } )
         window.location.hash = '#' + [this.map.getZoom()].concat(coords).join('/')
@@ -98,7 +99,6 @@
           hash = hash.substr(1).split('/')
           view = [hash[1], hash[2]]
         }
-        debugger
         this.map.setView(view)
       },
       listeners() {

@@ -3,7 +3,6 @@
   <div class="modal">
     <a href="#" class="close" @click.prevent="close">&times;</a>
     <div v-if="location !== undefined">
-      <h3 class="modal-title">{{location.place.displayString}}</h3>
       <Castle :location="location" />
       <div class="box">
         <h3>{{location.photo.description}}</h3>
