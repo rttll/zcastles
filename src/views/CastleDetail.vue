@@ -2,11 +2,12 @@
 
   <div class="modal">
     <a href="#" class="close" @click.prevent="close">&times;</a>
-    <h3 class="modal-title">{{location.place.displayString}}</h3>
-    <Castle :location="location" />
-    <div class="box">
-      <h3>{{location.photo.description}}</h3>
-      <p>You'll feel right at home in this incomparable {{location.photo.alt_description}}</p>
+    <div v-if="location !== undefined">
+      <Castle :location="location" />
+      <div class="box">
+        <h3>{{location.photo.description}}</h3>
+        <p>You'll feel right at home in this incomparable {{location.photo.alt_description}}</p>
+      </div>
     </div>
   </div>
 
@@ -30,7 +31,7 @@
     },    
     methods: {
       close () {
-        this.$router.push({ name: 'castles' })
+        this.$router.push({ name: 'castles', hash: window.location.hash })
       },   
     },
     mounted() {

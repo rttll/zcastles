@@ -27,6 +27,7 @@
     data() {
       return {
         map: null,
+        dragging: false,
         infoWindows: {},
         locations: {}
       }
@@ -51,6 +52,8 @@
         let locations = this.getLocations(searchResults)
         this.$store.dispatch('map/updateLocations', locations)
         NProgress.done()
+        // Used by markers to self-remove
+        Bus.$emit('searchDone')
       },
       getLocations(results) {
         let locations = {}
@@ -61,6 +64,7 @@
         return locations
       },
       searchMap() {
+        Bus.$emit('searchStart')
         NProgress.start()
         let bounds = this.map.getBounds()
         // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
@@ -79,19 +83,35 @@
         }).catch((err) => {
           console.log(err)
         })
-        
+      },
+      saveMap() {
+        if (this.$route.name === 'detail') return false
+        let _map = require('lodash/map');
+        let coords = _map( this.map.getCenter(), (coord) => { return Math.round( coord * 100) / 100 } )
+        window.location.hash = '#' + [this.map.getZoom()].concat(coords).join('/')
+      },
+      setMap() {
+        let hash = window.location.hash
+        let view; 
+        if (hash === '') {
+          view = [37.69097298486733, -122.43164062500001] // sfo
+        } else {
+          hash = hash.substr(1).split('/')
+          view = [hash[1], hash[2]]
+        }
+        this.map.setView(view)
       },
       listeners() {
         this.map.on('click', (e) => {
           console.log(e)
         })
         this.map.on('dragend', () => {
-          Bus.$emit('searchStart')
           this.debounceSearchMap()
-        })
+          this.saveMap()
+        }),
         this.map.on('zoomend', () => {
-          Bus.$emit('searchStart')
           this.debounceSearchMap()
+          this.saveMap()
         })
       },
       subscribe() {
@@ -99,37 +119,36 @@
         this.$store.subscribe((mutation) => {
           if (mutation.type === 'map/UPDATE_SEARCH') {
             const center = mutation.payload.place.geometry.coordinates
-            this.map.setView([center[1], center[0]])
-            // this.debounceSearchMap()
+            this.map.panTo([center[1], center[0]])
+            this.debounceSearchMap()
           }
         })
       },
       init() {
         let map = L.map('map', {
           zoomControl: false,
-          zoom: 8
+          zoom: 14
         })
-        const currentSearch = this['map/currentSearch']
-        const defaultView = [37.69097298486733, -122.43164062500001]
-        if (currentSearch !== null) {
-          const center = currentSearch.place.geometry.coordinates
-          map.setView([center[1], center[0]])
-        } else {
-          map.setView(defaultView)
-        }
         // eslint-disable-next-line
         const zoom = L.control.zoom({position: 'bottomright'}).addTo(map)
 
-        var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          subdomains: 'abcd',
-          minZoom: 0,
-          maxZoom: 20,
-          ext: 'png'
-        });
-        map.addLayer(Stamen_Toner);
-        
+        var mbToken = ''
+        L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mbToken}`, {
+          maxZoom: 18,
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' + '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+          detectRetina: false
+        }).addTo(map);
+
         this.map = map;
+
+        const currentSearch = this['map/currentSearch']
+        if (window.location.hash !== '' || currentSearch === null) {
+          this.setMap()
+        } else {
+          const center = currentSearch.place.geometry.coordinates
+          map.setView([center[1], center[0]])
+          this.saveMap()
+        }
         
         this.subscribe();
         this.listeners();

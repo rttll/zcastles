@@ -22,7 +22,8 @@
 
       this.popup = L.popup({
         autoPan: false,
-        closeButton: false
+        closeButton: false,
+        minWidth: 'x' // Prevents leaflet setting width. Width was not accurate 
         })
         .setLatLng(this.latLng)
         .setContent(
@@ -40,9 +41,8 @@
       this.$nextTick(() => {
         Bus.$on('mouseEnterCastle', placeId => {
           if (this.id === placeId) {
-
             this.popup.openOn(this.map)
-            this.map.setView(this.latLng)
+            // this.map.setView(this.latLng)
           }
         })
         Bus.$on('mouseLeaveCastle', placeId => {

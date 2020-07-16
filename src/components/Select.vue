@@ -23,6 +23,6 @@
 
 <style lang="scss" scoped>
   select {
-    padding: 1rem;
+    padding: 0.1rem 0.3rem;
   }
 </style>
