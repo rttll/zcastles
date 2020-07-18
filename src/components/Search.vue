@@ -124,9 +124,14 @@
         }
       },
       searchBoxBlurred() {
-        this.$refs.input.value = this.searchDisplay;
-        this.clearResults()
-        document.removeEventListener('click', this.blurListener)
+        let input = this.$refs.input
+        // Firing unexpectedly when input is undefined. can't figure out why
+        if (typeof input !== 'undefined') {
+          input.value = this.searchDisplay;
+          this.clearResults()
+        }
+        if (typeof this.blurListener !== 'undefined')
+          document.removeEventListener('click', this.blurListener)
       },
       init () {
         var debounce = require('lodash/debounce')
