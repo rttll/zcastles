@@ -1,6 +1,8 @@
 # ZCastles
 
-Skill-building project for component-based Vue app. 
+Zillow clone for finding castles (but not really).
+
+Just a for-fun project to practice a full component-based Vue app.
 
 ## Project setup
 
