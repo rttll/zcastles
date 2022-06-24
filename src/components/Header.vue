@@ -1,36 +1,59 @@
 <script setup>
 import { ref } from 'vue';
-const active = ref(false);
+import Icon from './Icon.vue';
+import Controls from './Controls.vue';
+
+const active = ref(true);
 </script>
 
 <template>
   <header
-    class="duration-300 ease-in-out transition-transform h-screen top-0 fixed items-end w-screen flex"
+    class="fixed top-0 z-50 flex items-end w-screen h-screen transition-transform duration-300 ease-in-out"
     :class="active ? '-translate-y-full ' : '-translate-y-1/2 '"
   >
-    <section
-      class="duration-300 ease-in-out p-8 grow flex items-center justify-between"
+    <div
+      class="flex items-center justify-between p-8 duration-300 ease-in-out grow"
       :class="{
         'translate-y-full border-b border-gray-200 shadow bg-white': active,
       }"
     >
-      <!-- :class="active ? 'scale-x-50' : 'scale-x-100'" -->
-      <!-- <div
-          class="rounded-tl-full bg-gray-200 w-12 content rounded-bl-full"
-        ></div> -->
-      <!-- <div class="rounded-tr-full bg-gray-200 w-12 rounded-br-full"></div> -->
-      <div class="flex origin-left transition-transform duration-300 grow">
-        <input
-          type="text"
-          class="bg-gray-200 p-6 pl-0 text-lg grow"
-          @focus="active = true"
-          @blur="active = false"
-        />
-      </div>
-      <div v-if="active" class="flex space-x-4" :class="active ? '' : ''">
-        <div>1</div>
-        <div>2</div>
-      </div>
-    </section>
+      <section class="relative flex grow" :class="active ? '' : ''">
+        <div
+          class="flex w-full grow"
+          :class="active ? 'md:w-1/2 md:grow-0' : ''"
+        >
+          <input
+            type="text"
+            class="relative z-20 p-6 px-8 text-lg bg-transparent outline-none grow"
+          />
+          <div class="absolute z-10 w-full">
+            <div
+              class="p-1 text-lg bg-gray-100 rounded-tl-full rounded-tr-full"
+            >
+              &nbsp;
+            </div>
+            <!-- <ul class="flex flex-col pt-8 overflow-y-auto bg-gray-100 grow">
+              <li
+                v-for="res in [1, 2, 3, 4, 5]"
+                :key="res"
+                class="p-4 border-b border-gray-400 grow"
+              >
+                {{ res }}
+              </li>
+            </ul> -->
+            <div
+              class="p-1 text-lg bg-gray-100 rounded-bl-full rounded-br-full"
+            >
+              &nbsp;
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="active" class="" :class="active ? '' : ''">
+        <Icon class="text-3xl" name="slider" />
+        <!-- <Controls /> -->
+      </section>
+    </div>
   </header>
 </template>
