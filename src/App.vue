@@ -1,16 +1,18 @@
 <script setup>
-// import 'the-new-css-reset/css/reset.css';
 import Header from './components/Header.vue';
-import Map from './components/Map.vue';
-import ResultGrid from './components/ResultGrid.vue';
+import Panel from './components/Panel.vue';
+import Toggler from './components/Toggler.vue';
 </script>
 
 <template>
   <section class="w-screen h-screen">
-    <Header />
-    <div class="relative h-screen">
-      <Map />
-      <ResultGrid />
-    </div>
+    <Panel>
+      <header class="py-20 pt-28">
+        <h1 class="text-4xl text-center">Find your dream castle</h1>
+      </header>
+      <Header />
+      <router-view></router-view>
+    </Panel>
+    <Toggler />
   </section>
 </template>

@@ -1,5 +1,19 @@
 import { createApp } from 'vue';
-import App from './App.vue';
-import './assets/index.css';
+import { createPinia } from 'pinia';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
-createApp(App).mount('#app');
+import './assets/index.css';
+import App from './App.vue';
+import routes from '@/routes';
+
+const app = createApp(App);
+const pinia = createPinia();
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+});
+
+app.use(pinia);
+app.use(router);
+
+app.mount('#app');
