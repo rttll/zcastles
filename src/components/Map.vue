@@ -44,5 +44,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div id="map" class="flex w-full h-full bg-gray-900"></div>
+  <div id="map" style="z-index: 1" class="flex w-full h-full bg-gray-900"></div>
 </template>
