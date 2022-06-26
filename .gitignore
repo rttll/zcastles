@@ -32,3 +32,5 @@ _graphics/
 .vercel/
 .vscode/
 
+# env files
+.env

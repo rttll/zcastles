@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite ",
+    "serve": "node api/server/_index.js",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -19,6 +20,8 @@
     "@vitejs/plugin-vue": "^2.3.3",
     "@vitejs/plugin-vue-jsx": "^1.3.10",
     "autoprefixer": "^10.4.7",
+    "dotenv": "^16.0.1",
+    "node-fetch": "^3.2.6",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.4",
     "vite": "^2.9.9"
