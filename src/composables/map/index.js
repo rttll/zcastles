@@ -52,12 +52,13 @@ class Map {
   set() {
     let hash = window.location.hash;
     let view;
-    if (hash === '') {
-      view = [37.69097298486733, -122.43164062500001]; // sfo
-    } else {
-      hash = hash.substr(1).split('/');
-      view = [hash[1], hash[2]];
-    }
+    // if (hash === '') {
+    //   view = [37.69097298486733, -122.43164062500001]; // sfo
+    // } else {
+    //   hash = hash.substr(1).split('/');
+    //   view = [hash[1], hash[2]];
+    // }
+    view = [37.69097298486733, -122.43164062500001]; // sfo
     this._map.setView(view);
   }
 }
