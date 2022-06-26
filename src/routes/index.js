@@ -2,12 +2,10 @@ const routes = [
   {
     path: '/',
     component: () => import('@/views/Wrapper.vue'),
-    children: [
-      {
-        path: 'castles',
-        component: () => import('@/views/Listings.vue'),
-      },
-    ],
+  },
+  {
+    path: '/map',
+    component: () => import('@/views/MapView.vue'),
   },
   // {
   //   path: '/',
