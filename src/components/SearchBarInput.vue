@@ -1,19 +1,27 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { prediction } from '@/services/search.js';
+import { storeToRefs } from 'pinia';
+
+import { useSearchStore } from '@/stores/search';
+import { prediction } from '@/services/search';
 
 const router = useRouter();
 const route = useRoute();
+const store = useSearchStore();
 
+// const { term, results }
 const term = ref('');
 const results = ref([]);
-
-const host = 'http://localhost:8080';
 
 const search = () => {
   if (term.value.length < 2) return (results.value = []);
   prediction(term.value).then((json) => (results.value = json.results));
+};
+
+const onResultClick = (location) => {
+  const coords = location.place.geometry.coordinates;
+  store.location.coordinates = [coords['1'], coords['0']];
 };
 
 watch(term, () => {
@@ -53,10 +61,19 @@ onMounted(() => {
       >
         <li
           v-for="res in results"
-          :key="res"
+          :key="res.id"
           class="p-4 border-b border-gray-400 grow"
         >
-          {{ res.displayString }}
+          <a
+            href="#"
+            @click.prevent="
+              () => {
+                onResultClick(res);
+              }
+            "
+          >
+            {{ res.displayString }}
+          </a>
         </li>
       </ul>
       <div class="p-1 text-lg bg-gray-100 rounded-bl-full rounded-br-full">

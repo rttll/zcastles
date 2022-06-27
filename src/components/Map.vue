@@ -1,43 +1,30 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import 'leaflet/dist/leaflet.css';
 
-import img from '../../tmp/kitera-dent-z4ky2zXIjDM-unsplash.jpg';
-
+import { useSearchStore } from '@/stores/search';
 import { Map } from '@/lib/map';
+
+const store = useSearchStore();
+const { location } = storeToRefs(store);
 
 let map = null;
 
+store.$subscribe((mutation, state) => {
+  // if mutation.events.key
+  map.self.setView(state.location.coordinates);
+});
+
 onMounted(async () => {
   map = new Map('map');
-  map.set();
+  map.self.setView(store.location.coordinates);
 
-  let a = [50.5, 30.5];
-  const data = {
-    url: img,
-    location: {
-      place: {
-        geometry: {
-          coordinates: a,
-        },
-      },
-      photo: {
-        urls: {
-          thumb: '',
-        },
-      },
-      price: '$$$',
-      sqft: 1234,
-      bedrooms: 12,
-      bathrooms: 123,
-    },
-  };
+  // map.self.setView(a);
+  // let marker = map.marker.create(data);
+  // marker.addTo(map.self);
 
-  map.self.setView(a);
-  let marker = map.marker.create(data);
-  marker.addTo(map.self);
-
-  let popup = await map.popup.create(data);
+  // let popup = await map.popup.create(data);
   // popup.openOn(map.self);
 });
 </script>

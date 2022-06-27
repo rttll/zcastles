@@ -49,7 +49,7 @@ class Map {
     };
   }
 
-  set() {
+  setView() {
     let hash = window.location.hash;
     let view;
     // if (hash === '') {

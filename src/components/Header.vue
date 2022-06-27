@@ -3,10 +3,7 @@ import { ref, computed } from 'vue';
 import Icon from './Icon.vue';
 import Controls from './Controls.vue';
 
-import { useStore } from '../store/panel';
-
-const store = useStore();
-const active = computed(() => store.active);
+const active = false; //computed(() => store.active);
 </script>
 
 <template>

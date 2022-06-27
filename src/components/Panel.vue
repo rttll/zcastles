@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
-// import { useStore } from '../store/panel';
 
 const route = useRoute();
 const showHeader = true;

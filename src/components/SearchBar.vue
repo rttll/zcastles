@@ -5,11 +5,7 @@ import Icon from './Icon.vue';
 import Controls from './Controls.vue';
 import SearchBarInput from './SearchBarInput.vue';
 
-// import { prediction } from '../composables/search';
-import { useStore } from '../store/panel';
-
-const store = useStore();
-const active = computed(() => store.active);
+const active = false; //computed(() => store.active);
 </script>
 
 <template>
