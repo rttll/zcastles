@@ -1,6 +1,7 @@
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { prediction } from '@/services/search.js';
 
 const router = useRouter();
 const route = useRoute();
@@ -12,12 +13,7 @@ const host = 'http://localhost:8080';
 
 const search = () => {
   if (term.value.length < 2) return (results.value = []);
-  fetch(`${host}?term=${term.value}`)
-    .then((resp) => resp.json())
-    .then((json) => {
-      results.value = json.results;
-    })
-    .catch((err) => console.error);
+  prediction(term.value).then((json) => (results.value = json.results));
 };
 
 watch(term, () => {
@@ -45,7 +41,6 @@ onMounted(() => {
       class="relative z-20 p-6 px-8 text-lg bg-transparent outline-none grow"
       v-model="term"
     />
-    {{ term }}
     <!-- @focus="active = true"
             @blur="active = false" -->
     <div class="absolute z-10 w-full">

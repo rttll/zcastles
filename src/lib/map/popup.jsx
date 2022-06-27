@@ -1,5 +1,5 @@
 import { renderToString } from 'vue/server-renderer';
-import { decimal, delimiters } from '../util';
+import { decimal, delimiters } from '@/lib/helpers/numbers.js';
 
 const content = (data) => {
   // <img src="${data.location.photo.urls.thumb}" />

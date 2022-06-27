@@ -4,8 +4,7 @@ import 'leaflet/dist/leaflet.css';
 
 import img from '../../tmp/kitera-dent-z4ky2zXIjDM-unsplash.jpg';
 
-import { Map } from '../composables/map';
-// import MapMarker from './MapMarker.vue';
+import { Map } from '@/lib/map';
 
 let map = null;
 
