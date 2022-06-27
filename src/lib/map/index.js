@@ -1,7 +1,8 @@
 import leaflet from 'leaflet';
 
-import { create as createMarker } from './marker';
-import { create as createPopup } from './popup';
+import * as Marker from './marker';
+import * as Popup from './popup';
+import * as Tiles from './tiles';
 
 class Map {
   constructor(id) {
@@ -10,20 +11,8 @@ class Map {
       zoom: 14,
     });
 
-    const zoom = L.control.zoom({ position: 'bottomright' }).addTo(this._map);
-
-    var mbToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-    L.tileLayer(
-      `https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mbToken}`,
-      {
-        maxZoom: 18,
-        attribution:
-          'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-          '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-          'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        detectRetina: false,
-      }
-    ).addTo(this._map);
+    L.control.zoom({ position: 'bottomright' }).addTo(this._map);
+    L.tileLayer(Tiles.url, Tiles.options).addTo(this._map);
   }
 
   get self() {
@@ -33,7 +22,7 @@ class Map {
   get marker() {
     return {
       create: (data) => {
-        const marker = createMarker(data);
+        const marker = Marker.create(ata);
         marker.addTo(this._map);
         return marker;
       },
@@ -43,7 +32,7 @@ class Map {
   get popup() {
     return {
       create: (data) => {
-        const popup = createPopup(data);
+        const popup = Popup.create(data);
         return popup;
       },
     };
