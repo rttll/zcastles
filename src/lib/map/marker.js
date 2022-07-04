@@ -2,8 +2,7 @@
 // returns marker
 
 const create = (data) => {
-  let coordinates = data.location.place.geometry.coordinates;
-  let ll = [coordinates[0], coordinates[1]];
+  let ll = data.coordinates;
 
   // <img src="${data.url}" />
   let icon = L.divIcon({

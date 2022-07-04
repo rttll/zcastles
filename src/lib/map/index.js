@@ -5,7 +5,7 @@ import * as Popup from './popup';
 import * as Tiles from './tiles';
 
 class Map {
-  constructor(id) {
+  constructor(id, options = {}) {
     this._map = L.map(id, {
       zoomControl: false,
       zoom: 14,
@@ -13,6 +13,12 @@ class Map {
 
     L.control.zoom({ position: 'bottomright' }).addTo(this._map);
     L.tileLayer(Tiles.url, Tiles.options).addTo(this._map);
+
+    if (options.debug) {
+      this._map.on('click', (e) => {
+        console.log(this._map.getCenter());
+      });
+    }
   }
 
   get self() {
@@ -22,7 +28,7 @@ class Map {
   get marker() {
     return {
       create: (data) => {
-        const marker = Marker.create(ata);
+        const marker = Marker.create(data);
         marker.addTo(this._map);
         return marker;
       },

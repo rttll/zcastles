@@ -4,7 +4,8 @@
 
 import { createServer } from 'http';
 import { parse } from 'url';
-import { prediction } from '../search/_service.js';
+import chalk from 'chalk';
+import { prediction, search } from '../search/_service.js';
 
 const sendResponse = (res, data) => {
   let mimeType = 'application/json';
@@ -13,7 +14,7 @@ const sendResponse = (res, data) => {
   res.end();
 };
 
-const cors = (req, res) => {
+const handleCors = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Request-Method', '*');
   res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
@@ -26,9 +27,17 @@ const cors = (req, res) => {
 };
 
 const handler = function (req, res) {
-  cors(req, res);
+  handleCors(req, res);
   const { pathname, query } = parse(req.url, true);
 
+  if (pathname === '/search') {
+    search(query.bbox).then((resp) => {
+      sendResponse(res, resp);
+    });
+    return;
+  }
+
+  console.log('predicst');
   prediction(query.term).then((resp) => {
     sendResponse(res, resp);
   });
@@ -53,6 +62,10 @@ const handler = function (req, res) {
 
 const server = createServer(handler);
 const port = process.env.PORT || 8080;
-console.log('listening on port ' + port);
+
+console.log('\n');
+console.log(
+  chalk.green('  api server listening on port:') + ' ' + chalk.cyan(port)
+);
 
 server.listen(port);

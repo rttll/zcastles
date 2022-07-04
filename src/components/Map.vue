@@ -1,41 +1,45 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import 'leaflet/dist/leaflet.css';
 
-import { useSearchStore } from '@/stores/search';
+import { useMapStore } from '@/stores/map';
 import { Map } from '@/lib/map';
-import { places } from '@/services/search';
+import { Search } from '@/services/search/places';
 
-const store = useSearchStore();
+const store = useMapStore();
 const { location } = storeToRefs(store);
+let map;
 
-let map = null;
+const onMapChange = () => {
+  store.$patch({
+    bounds: map.self.getBounds(),
+  });
 
-// Initialize the map
+  const bbox = store.boundsToString;
+  const search = new Search(bbox);
+  search.on('results', (res) => {
+    store.addResults(res);
+  });
+  search.start();
+};
+
 onMounted(async () => {
-  map = new Map('map');
+  map = new Map('map', { debug: true });
   map.self.setView(store.location.coordinates);
 
-  map.self.on('dragend', () => {
-    let bounds = map.self.getBounds();
-    // fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
-    let bbox =
-      `${bounds.getSouthWest().lng},` +
-      `${bounds.getSouthWest().lat},` +
-      `${bounds.getNorthEast().lng},` +
-      `${bounds.getNorthEast().lat}`;
-
-    const res = places(bbox);
-  });
-  // this.map.on('zoomend', () => {
-  //   this.debounceSearchMap()
-  //   thi
+  // todo: debounce
+  map.self.on('dragend', onMapChange);
+  map.self.on('zoomend', onMapChange);
 });
 
-store.$subscribe((mutation, state) => {
-  // if mutation.events.key
-  map.self.setView(state.location.coordinates);
+store.$onAction(({ name, args, after }) => {
+  if (name === 'addResult') {
+    let res = store.results[args[0].id];
+    after((result) => {
+      let marker = map.marker.create(result);
+    });
+  }
 });
 </script>
 

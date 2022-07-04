@@ -12,6 +12,6 @@ import MapView from '@/views/MapView.vue';
       </div>
     </header>
     <MapView />
-    <div>other thingsss???</div>
+    <!-- <div>other thingsss???</div> -->
   </section>
 </template>

@@ -3,12 +3,12 @@ import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
-import { useSearchStore } from '@/stores/search';
+import { useMapStore } from '@/stores/map';
 import { prediction } from '@/services/search';
 
 const router = useRouter();
 const route = useRoute();
-const store = useSearchStore();
+const store = useMapStore();
 
 // const { term, results }
 const term = ref('');
