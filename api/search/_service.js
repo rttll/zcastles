@@ -25,16 +25,5 @@ const search = (bbox) => {
     .then((json) => json)
     .catch((err) => err);
 };
-// const search = {
-//   init: (bbox) => {
-//     let url = `${base_url}/v4/place?sort=relevance&feedback=false&pageSize=10&page=1&q=church`;
-//     url += `&bbox=${bbox}`;
-//     url += `&key=${process.env.MAPQUEST_KEY}`;
-//     return _search(url);
-//   },
-//   next: (url) => {
-//     return _search(url);
-//   },
-// };
 
 export { prediction, search };

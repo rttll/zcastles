@@ -31,6 +31,8 @@ onMounted(async () => {
   // todo: debounce
   map.self.on('dragend', onMapChange);
   map.self.on('zoomend', onMapChange);
+
+  onMapChange();
 });
 
 store.$onAction(({ name, args, after }) => {
@@ -38,6 +40,9 @@ store.$onAction(({ name, args, after }) => {
     let res = store.results[args[0].id];
     after((result) => {
       let marker = map.marker.create(result);
+      marker.on('click', (e) => {
+        console.log('marker click', e.target.options);
+      });
     });
   }
 });

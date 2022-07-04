@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useImageStore } from '@/stores/images';
 
 const getters = {
   // Fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
@@ -34,6 +35,8 @@ export const useMapStore = defineStore('map', {
             data.place.geometry.coordinates[0],
           ],
           address: data.properties,
+          name: data.name,
+          image: data.image,
         };
         this.results[data.id] = res;
         resolve(res);
@@ -42,6 +45,10 @@ export const useMapStore = defineStore('map', {
     addResults(results) {
       for (const res of results) {
         if (!this.results[res.id]) {
+          const imageStore = useImageStore();
+          let keys = Object.keys(imageStore.images);
+          res.image = imageStore.images[keys[0]];
+
           this.addResult(res);
         }
       }

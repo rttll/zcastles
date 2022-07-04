@@ -6,6 +6,7 @@ import { createServer } from 'http';
 import { parse } from 'url';
 import chalk from 'chalk';
 import { prediction, search } from '../search/_service.js';
+import { search as imageSearch } from '../images/_service.js';
 
 const sendResponse = (res, data) => {
   let mimeType = 'application/json';
@@ -30,33 +31,24 @@ const handler = function (req, res) {
   handleCors(req, res);
   const { pathname, query } = parse(req.url, true);
 
+  console.log(pathname);
+
   if (pathname === '/search') {
     search(query.bbox).then((resp) => {
       sendResponse(res, resp);
     });
-    return;
   }
 
-  console.log('predicst');
-  prediction(query.term).then((resp) => {
-    sendResponse(res, resp);
-  });
+  if (pathname === '/images') {
+    imageSearch(query.page).then((resp) => {
+      sendResponse(res, resp);
+    });
+  }
 
-  return;
-  try {
-    const route = routes[pathname];
-    let method = controller[route];
-    method(req, res, query);
-  } catch (err) {
-    // html catch-all (e.g /terms), and 404
-    let ext = pathname.split('.').slice(-1)[0],
-      data = null;
-    if (ext === 'html') {
-      let base = getFile(`./public/${pathname}`);
-      data = parseTemplates(base);
-    }
-
-    sendResponse(res, { [ext]: data });
+  if (pathname === '/prediction') {
+    prediction(query.term).then((resp) => {
+      sendResponse(res, resp);
+    });
   }
 };
 
