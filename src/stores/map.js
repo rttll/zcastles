@@ -34,7 +34,7 @@ export const useMapStore = defineStore('map', {
             data.place.geometry.coordinates[1],
             data.place.geometry.coordinates[0],
           ],
-          address: data.properties,
+          address: data.place.properties,
           name: data.name,
           image: data.image,
         };
@@ -44,7 +44,11 @@ export const useMapStore = defineStore('map', {
     },
     addResults(results) {
       for (const res of results) {
-        if (!this.results[res.id]) {
+        const isNew = this.results[res.id] === undefined;
+        const isMatch =
+          res.place.properties.street.match(/[c|C]hurch/) === null;
+
+        if (isNew && isMatch) {
           const imageStore = useImageStore();
           let keys = Object.keys(imageStore.images);
           res.image = imageStore.images[keys[0]];

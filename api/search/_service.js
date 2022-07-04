@@ -21,9 +21,14 @@ const search = (bbox) => {
   url += `&bbox=${bbox}`;
   url += `&key=${process.env.MAPQUEST_KEY}`;
   return fetch(url)
-    .then((resp) => resp.json())
+    .then((resp) => {
+      return resp.json();
+    })
     .then((json) => json)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 };
 
 export { prediction, search };

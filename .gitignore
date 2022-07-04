@@ -35,4 +35,6 @@ _graphics/
 # env files
 .env
 
-keys
+# vercel upload key files
+api/images/_files
+_files

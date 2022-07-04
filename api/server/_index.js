@@ -31,8 +31,6 @@ const handler = function (req, res) {
   handleCors(req, res);
   const { pathname, query } = parse(req.url, true);
 
-  console.log(pathname);
-
   if (pathname === '/search') {
     search(query.bbox).then((resp) => {
       sendResponse(res, resp);

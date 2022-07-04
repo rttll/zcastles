@@ -21,6 +21,10 @@ const onMapChange = () => {
   search.on('results', (res) => {
     store.addResults(res);
   });
+  search.on('error', (err) => {
+    console.error(err);
+  });
+
   search.start();
 };
 
@@ -41,7 +45,9 @@ store.$onAction(({ name, args, after }) => {
     after((result) => {
       let marker = map.marker.create(result);
       marker.on('click', (e) => {
-        console.log('marker click', e.target.options);
+        console.log('marker click');
+        console.log(e.target.options.locationData.name);
+        console.log(e.target.options.locationData.address);
       });
     });
   }
