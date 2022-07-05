@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
+import { debounce } from 'lodash';
 import 'leaflet/dist/leaflet.css';
 
 import { useMapStore } from '@/stores/map';
@@ -24,7 +25,6 @@ const onMapChange = () => {
   search.on('error', (err) => {
     console.error(err);
   });
-
   search.start();
 };
 
@@ -32,9 +32,9 @@ onMounted(async () => {
   map = new Map('map', { debug: true });
   map.self.setView(store.location.coordinates);
 
-  // todo: debounce
-  map.self.on('dragend', onMapChange);
-  map.self.on('zoomend', onMapChange);
+  const onChange = debounce(onMapChange, 150);
+  map.self.on('dragend', onChange);
+  map.self.on('zoomend', onChange);
 
   onMapChange();
 });
@@ -44,11 +44,11 @@ store.$onAction(({ name, args, after }) => {
     let res = store.results[args[0].id];
     after((result) => {
       let marker = map.marker.create(result);
-      marker.on('click', (e) => {
-        console.log('marker click');
-        console.log(e.target.options.locationData.name);
-        console.log(e.target.options.locationData.address);
-      });
+      // marker.on('click', (e) => {
+      //   console.log('marker click');
+      //   console.log(e.target.options.locationData.name);
+      //   console.log(e.target.options.locationData.address);
+      // });
     });
   }
 });
