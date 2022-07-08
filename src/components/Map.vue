@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { debounce } from 'lodash';
 import 'leaflet/dist/leaflet.css';
@@ -58,6 +58,16 @@ store.$onAction(({ name, args, after }) => {
     });
   });
 });
+
+// watch(
+//   () => store.focusedId,
+//   (is, was) => {
+//     if (is) {
+//       const location = store.getResultById(is);
+//       store.map.self.flyTo(location.coordinates);
+//     }
+//   }
+// );
 </script>
 
 <template>

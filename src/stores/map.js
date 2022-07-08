@@ -27,6 +27,7 @@ export const useMapStore = defineStore('map', {
         coordinates: [37.69097298486733, -122.43164062500001],
       },
       results: {},
+      focusedId: null,
     };
   },
   actions: {
