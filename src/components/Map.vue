@@ -6,17 +6,32 @@ import 'leaflet/dist/leaflet.css';
 
 import { useMapStore } from '@/stores/map';
 import { Map } from '@/lib/map';
+import * as Marker from '@/lib/map/marker.jsx';
 import { Search } from '@/services/search/places';
 
 const store = useMapStore();
 const { location } = storeToRefs(store);
-let map;
 
+// Initialize map
+onMounted(async () => {
+  store.map = new Map('map', { debug: true });
+  store.map.self.setView(store.location.coordinates);
+
+  const onChange = debounce(onMapChange, 150);
+  store.map.self.on('dragend', onChange);
+  store.map.self.on('zoomend', onChange);
+
+  onMapChange();
+});
+
+// Update search and results, markers, on map move
 const onMapChange = () => {
-  store.$patch({
-    bounds: map.self.getBounds(),
-  });
+  store.setBounds(store.map.self.getBounds());
 
+  // store.$patch({
+  // });
+
+  // Search visible map and add results to the store
   const bbox = store.boundsToString;
   const search = new Search(bbox);
   search.on('results', (res) => {
@@ -28,29 +43,20 @@ const onMapChange = () => {
   search.start();
 };
 
-onMounted(async () => {
-  map = new Map('map', { debug: true });
-  map.self.setView(store.location.coordinates);
-
-  const onChange = debounce(onMapChange, 150);
-  map.self.on('dragend', onChange);
-  map.self.on('zoomend', onChange);
-
-  onMapChange();
-});
-
+// Watch for new results added to store and create markers
 store.$onAction(({ name, args, after }) => {
-  if (name === 'addResult') {
-    let res = store.results[args[0].id];
-    after((result) => {
-      let marker = map.marker.create(result);
-      // marker.on('click', (e) => {
-      //   console.log('marker click');
-      //   console.log(e.target.options.locationData.name);
-      //   console.log(e.target.options.locationData.address);
-      // });
+  if (name !== 'addResult') return;
+  // let res = store.results[args[0].id];
+  after((result) => {
+    Marker.create(result).then((marker) => {
+      marker.addTo(store.map.self);
+
+      marker.on('click', (e) => {
+        console.log('marker click');
+        console.log(e.target.options);
+      });
     });
-  }
+  });
 });
 </script>
 

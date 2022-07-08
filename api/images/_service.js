@@ -2,10 +2,12 @@ import fetch from 'node-fetch';
 
 import 'dotenv/config';
 
-const api = `https://api.unsplash.com/collections/${process.env.UNSPLASH_COLLECTION_ID}/photos`;
+// const api = `https://api.unsplash.com/collections/${process.env.UNSPLASH_COLLECTION_ID}/photos`;
+const api = `https://api.unsplash.com/search/photos`;
 
 const search = (page = 0) => {
   const args = [
+    ['query', 'castle'],
     ['page', page],
     ['per_page', 30],
     ['client_id', process.env.UNSPLASH_CLIENT_ID],

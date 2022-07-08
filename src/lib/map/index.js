@@ -1,6 +1,5 @@
 import leaflet from 'leaflet';
 
-import * as Marker from './marker';
 import * as Popup from './popup';
 import * as Tiles from './tiles';
 
@@ -23,16 +22,6 @@ class Map {
 
   get self() {
     return this._map;
-  }
-
-  get marker() {
-    return {
-      create: (data) => {
-        const marker = Marker.create(data);
-        marker.addTo(this._map);
-        return marker;
-      },
-    };
   }
 
   get popup() {

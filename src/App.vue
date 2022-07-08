@@ -3,7 +3,8 @@ import { useImageStore } from '@/stores/images';
 import { search } from '@/services/images';
 
 const store = useImageStore();
-search().then((resp) => {
+search(store.page).then((resp) => {
+  store.search.page++;
   store.addImages(resp);
 });
 </script>

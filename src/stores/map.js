@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useImageStore } from '@/stores/images';
 
+const imageStore = useImageStore();
 const getters = {
   // Fun fact. Leaflet coordinate point order is Lat, Lng. and mapquest uses Lng, Lat.
   boundsToString() {
@@ -11,20 +12,30 @@ const getters = {
       this.bounds.getNorthEast().lat,
     ].join(',');
   },
+  getResultById: (state) => {
+    return (id) => state.results[id];
+  },
 };
 
 export const useMapStore = defineStore('map', {
   state: () => {
     return {
+      map: null,
+      bounds: null,
       prediction: null,
       location: {
         coordinates: [37.69097298486733, -122.43164062500001],
       },
-      bounds: null,
       results: {},
     };
   },
   actions: {
+    setBounds(data) {
+      return new Promise((resolve, reject) => {
+        this.bounds = data;
+        resolve(data);
+      });
+    },
     addResult(data) {
       return new Promise((resolve, reject) => {
         const res = {
@@ -37,7 +48,12 @@ export const useMapStore = defineStore('map', {
           address: data.place.properties,
           name: data.name,
           image: data.image,
+          visible: true,
         };
+
+        // Get image from the image store
+        res.image = imageStore.getImage();
+
         this.results[data.id] = res;
         resolve(res);
       });
@@ -49,10 +65,6 @@ export const useMapStore = defineStore('map', {
           res.place.properties.street.match(/[c|C]hurch/) === null;
 
         if (isNew && isMatch) {
-          const imageStore = useImageStore();
-          let keys = Object.keys(imageStore.images);
-          res.image = imageStore.images[keys[0]];
-
           this.addResult(res);
         }
       }
