@@ -1,16 +1,19 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
-import VueCompositionApi from '@vue/composition-api';
+import './assets/index.css';
+import App from './App.vue';
+import routes from '@/routes';
 
-Vue.use(VueCompositionApi);
+const app = createApp(App);
+const pinia = createPinia();
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+});
 
-Vue.config.productionTip = false
+app.use(pinia);
+app.use(router);
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+app.mount('#app');
